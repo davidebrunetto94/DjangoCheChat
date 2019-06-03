@@ -16,7 +16,7 @@ class Chat(models.Model):
     participants = models.ManyToManyField(User)
 
 class PhoneBook(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='+', primary_key=True)
     contacts = models.ManyToManyField(User)
 
 class Message(models.Model):
