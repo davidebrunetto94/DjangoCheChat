@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div id="login">
+    <div id="loginColumn">
+        <div class="has-text-centered">
+            <i class="fas fa-comment-dots is-size-2"></i>
+            <h1 class="title">CheChat</h1>
+            <h2 class="subtitle is-size-5">Parla con i tuoi amici immaginari</h2>
+
+            <form action="#" method="POST">
+                {% csrf_token %}
+                <div class="field has-background-white">
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input is-shadowless" type="text" name="username" placeholder=" ">
+                        <span data-placeholder="Username" class="focus-input is-size-6"></span>
+                        <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                    </p>
+                </div>
+
+                <div class="field has-background-white">
+                    <p class="control has-icons-left">
+                        <input class="input is-shadowless" type="password" name="password" placeholder=" ">
+                        <span data-placeholder="Password" class="focus-input is-size-6"></span>
+                        <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                    </p>
+                </div>
+
+                <div class="has-text-centered">
+                    <input class="button is-link is-fullwidth is-medium" type="submit" value="Login">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,4 +1,22 @@
 from django.contrib import admin
-from .models import *
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 
-admin.site.register(User)
+from .models import ChatUser
+
+
+# Define an inline admin descriptor
+class ChatUserInline(admin.StackedInline):
+    model = ChatUser
+    can_delete = False
+    verbose_name_plural = 'Chat users'
+
+
+# Define a new User admin
+class UserAdmin(BaseUserAdmin):
+    inlines = (ChatUserInline,)
+
+
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)

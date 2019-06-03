@@ -1,0 +1,73 @@
+*, html {
+    font-family: 'Poppins', sans-serif;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+}
+
+/** LOGIN */
+
+#login {
+    height: 100%;
+    display: grid;
+}
+
+#loginColumn {
+    width: 280px;
+    height: 380px;
+    margin: auto;
+}
+
+#loginColumn input[type="text"],
+#loginColumn input[type="password"] {
+    outline: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background: transparent;
+    border-bottom: 2px solid #d9d9d9;
+}
+
+#loginColumn .field,
+#loginColumn input[type="submit"] {
+    margin-top: 50px;
+}
+
+#loginColumn input:focus {
+    border-bottom: 2px solid #3273dc;
+}
+
+/* Placeholder animation */
+
+.focus-input::after {
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: -20px;
+    padding-left: 35px;
+    line-height: 1.2;
+    content: attr(data-placeholder);
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+}
+
+#loginColumn input[type="text"]:focus + .focus-input::after,
+#loginColumn input[type="password"]:focus + .focus-input::after {
+    top: -20px !important;
+    font-size: 15px !important;
+}
+
+#loginColumn input[type="text"]:placeholder-shown + .focus-input::after,
+#loginColumn input[type="password"]:placeholder-shown + .focus-input::after{
+    top: 10px;
+    left: 0px;
+}
+
+.focus-input {
+    pointer-events: none;
+}

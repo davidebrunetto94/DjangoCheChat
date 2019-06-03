@@ -1,12 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
 
 
-class User(models.Model):
-    """User model"""
-    username = models.CharField('Username', max_length=20)
-    password = models.CharField('Password', max_length=100)
-    fullname = models.CharField('Full name', max_length=100)
-    email = models.EmailField('Email')
-    profileImage = models.URLField('Profile image URL')
-    lastAccess = models.DateTimeField('Last access')
-
+class ChatUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profileImage = models.URLField('Profile image URL', default='')
+    lastAccess = models.DateTimeField('Last access', default=timezone.now)
