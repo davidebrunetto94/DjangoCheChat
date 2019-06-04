@@ -24,20 +24,12 @@ html, body {
 #loginColumn input[type="text"],
 #loginColumn input[type="password"] {
     outline: none;
-    border-top: none;
-    border-left: none;
-    border-right: none;
     background: transparent;
-    border-bottom: 2px solid #d9d9d9;
 }
 
 #loginColumn .field,
 #loginColumn input[type="submit"] {
     margin-top: 50px;
-}
-
-#loginColumn input:focus {
-    border-bottom: 2px solid #3273dc;
 }
 
 /* Placeholder animation */
@@ -70,4 +62,239 @@ html, body {
 
 .focus-input {
     pointer-events: none;
+}
+
+/** CHAT */
+/* Settings columns */
+#chat.columns {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    height: 100%;
+}
+
+#menu {
+    min-width: 110px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 15px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#chat .menu {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-basis: auto;
+    flex-shrink: 0;
+}
+
+#chat a:hover .fa-stack {
+    color: hsl(217, 71%, 53%) !important;
+    animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+#chat .fa-multiple .fa-stack-1x:nth-child(2) {
+    top: -10px;
+}
+
+#chat .fa-multiple .fa-stack-1x:nth-child(3) {
+    height: 15px;
+    bottom: -25px;
+}
+
+#chat .menu .icon {
+    width: 100%;
+}
+
+.menu > .menu-label + .menu-label {
+    margin-top: 30px;
+}
+
+.menu > .menu-label:nth-child(4) {
+    flex-grow: 1;
+}
+
+/* Chat list column */
+
+#chatListColumn {
+    overflow: auto;
+    min-width: 260px;
+}
+
+#chatListColumn .title,
+#chatList ul {
+    margin-top: 50px;
+}
+
+#chatList li:hover{
+    border-bottom: 2px solid hsl(217, 71%, 53%);
+}
+
+#chatList li {
+    border-bottom: 2px solid transparent;
+    padding: 25px 0;
+    transition: border-bottom 1s;
+}
+
+#chatList .user-info {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+}
+
+#chatList li h3 {
+    margin-right: auto;
+    margin-bottom: 0;
+    line-height: 1;
+}
+
+#chatList li a span {
+    margin-left: 30px;
+    white-space: nowrap;
+}
+
+/* Chat single columns */
+
+#chatSingle nav {
+    width: 88%;
+    min-width: 584px;
+    padding: 30px;
+}
+
+#chatSingle .messages {
+    width: 88%;
+    height: 78%;
+    display: flex;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+}
+
+#chatSingle .messages div {
+    margin-top: auto;
+}
+
+#chatSingle .messages li {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+#chatSingle .messages li.my-message  {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+#chatSingle .messages li img {
+    margin-right: 15px;
+    margin-left: 0;
+    order: 1;
+    margin-bottom: 15px;
+}
+
+#chatSingle .messages li.my-message img {
+    margin-left: 10px;
+    order: 2;
+}
+
+#chatSingle .messages li .content {
+    display: flex;
+    flex-direction: column;
+    order: 2;
+}
+
+#chatSingle .messages li.my-message .content {
+    order: 1;
+}
+
+#chatSingle .messages li {
+    text-align: left;
+}
+
+#chatSingle .messages li.my-message {
+    text-align: right;
+}
+
+#chatSingle .messages li .bubble {
+    max-width: 360px;
+    background: #f5f5f5;
+    text-align: left;
+    border-radius: 5px;
+}
+
+#chatSingle .messages li.my-message .bubble {
+    background: #007bff;
+    border-radius: 5px;
+}
+
+#chatSingle .messages li p {
+    padding: 15px 20px;
+    color: hsl(0, 0%, 71%);
+}
+
+#chatSingle .messages li.my-message p {
+    color: #fff;
+}
+
+#chatSingle .messages li span {
+    margin-top: 15px;
+    margin-left: 15px;
+}
+
+#chatSingle .send input[type="text"] {
+    width: 88%;
+    height: 55px;
+    background: #f5f5f5;
+    padding: 15px 50px 15px 20px;
+    border: none;
+    border-radius: 5px;
+}
+
+#chatSingle .send .icon {
+    position: absolute;
+    top: auto;
+    bottom: 40px;
+    right: 30px;
+    left: auto;
+    line-height: 0;
+    padding: 0 15px;
+}
+
+@keyframes shake
+{
+    15%
+    {
+        -webkit-transform: translateY(5px);
+        transform: translateY(5px);
+    }
+    30%
+    {
+        -webkit-transform: translateY(-5px);
+        transform: translateY(-5px);
+    }
+    50%
+    {
+        -webkit-transform: translateY(3px);
+        transform: translateY(3px);
+    }
+    65%
+    {
+        -webkit-transform: translateY(-3px);
+        transform: translateY(-3px);
+    }
+    80%
+    {
+        -webkit-transform: translateY(2px);
+        transform: translateY(2px);
+    }
+    100%
+    {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
 }

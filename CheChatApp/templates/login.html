@@ -11,11 +11,13 @@
             <h1 class="title">CheChat</h1>
             <h2 class="subtitle is-size-5">Parla con i tuoi amici immaginari</h2>
 
+            {% if error %}<div class="has-text-danger has-text-weight-medium is-size-5">{{ error.error }}</div>{% endif %}
+
             <form action="#" method="POST">
                 {% csrf_token %}
                 <div class="field has-background-white">
                     <p class="control has-icons-left has-icons-right">
-                        <input class="input is-shadowless" type="text" name="username" placeholder=" ">
+                        <input class="input is-shadowless {% if error %}is-danger{% endif %}" type="text" name="username" placeholder=" ">
                         <span data-placeholder="Username" class="focus-input is-size-6"></span>
                         <span class="icon is-small is-left">
                                 <i class="fas fa-user"></i>
@@ -25,7 +27,7 @@
 
                 <div class="field has-background-white">
                     <p class="control has-icons-left">
-                        <input class="input is-shadowless" type="password" name="password" placeholder=" ">
+                        <input class="input is-shadowless {% if error %}is-danger{% endif %}" type="password" name="password" placeholder=" ">
                         <span data-placeholder="Password" class="focus-input is-size-6"></span>
                         <span class="icon is-small is-left">
                                 <i class="fas fa-lock"></i>

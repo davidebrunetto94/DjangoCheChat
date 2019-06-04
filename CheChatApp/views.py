@@ -10,6 +10,7 @@ def user_listing(request):
     """View with the list of users"""
     return render(request, 'users/user_listing.html', {'users': User.objects.all()})
 
+
 def login(request):
     """Login view"""
     if request.method == 'GET':
@@ -30,10 +31,10 @@ def login(request):
             return render(request, 'chat.html')
         else:
             context = {'error': 'Wrong credentials'}
-            return render(request, 'login.html', {'context': context})
+            return render(request, 'login.html', {'error': context})
+
 
 def logout(request):
     """Logout views"""
     auth_logout(request)
-    context = {'successful': 'Logged out'}
     return redirect('login')

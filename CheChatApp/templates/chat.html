@@ -1,8 +1,225 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %}Chat{% endblock %} {% block content %}
+<div id="chat" class="columns">
+    <div id="menu" class="column is-1">
+        <aside class="menu has-text-centered">
+            <h1 class="title has-text-link">Che
+                <br>Chat</h1>
 
-{% block title %}Chat{% endblock %}
+            <div class="menu-label">
+                <a href="account/logout/" title="Chats" class="has-text-grey">
+                    <span class="icon is-large">
+                        <span class="fa-stack fa-2x">
+                            <i class="fas fa-circle fa-stack-2x"></i>
+                            <i class="fas fa-comment-dots fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </span>
+                    Chats
+                </a>
+            </div>
 
-{% block content %}
-    <h1>Chat</h1>
-    <a href="account/logout/">Logout</a>
+            <div class="menu-label">
+                <a href="account/logout/" title="New chat" class="has-text-grey">
+                    <span class="icon is-large">
+                        <span class="fa-stack fa-2x">
+                            <i class="fas fa-circle fa-stack-2x"></i>
+                            <i class="fas fa-plus fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </span>
+                    New chat
+                </a>
+            </div>
+
+            <div class="menu-label">
+                <a href="" title="New group " class="has-text-grey">
+                    <span class="icon is-large">
+                        <span class="fa-stack fa-2x fa-multiple">
+
+                            <i class="fas fa-circle fa-stack-2x"></i>
+                            <i class="fas fa-user-friends fa-stack-1x fa-inverse"></i>
+                            <i class="fas fa-plus fa-stack-1x fa-inverse"></i>
+
+                        </span>
+                    </span>
+                    New group
+                </a>
+            </div>
+
+            <div class="menu-label">
+                <a href="" title="Address book" class="has-text-grey">
+                    <span class="icon is-large">
+                        <span class="fa-stack fa-2x">
+                            <i class="fas fa-circle fa-stack-2x"></i>
+                            <i class="fas fa-address-book fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </span>
+                    Address book
+                </a>
+            </div>
+
+            <div class="menu-label">
+                <a href="account/logout/" title="Settings" class="has-text-grey">
+                    <span class="icon is-large">
+                        <span class="fa-stack fa-2x">
+                            <i class="fas fa-circle fa-stack-2x"></i>
+                            <i class="fas fa-users-cog fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </span>
+                    Settings
+                </a>
+            </div>
+
+            <div class="menu-label">
+                <a href="account/logout/" title="Logout" class="has-text-grey">
+                    <span class="icon is-large">
+                        <span class="fa-stack fa-2x">
+                            <i class="fas fa-circle fa-stack-2x"></i>
+                            <i class="fas fa-sign-out-alt fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </span>
+                    Logout
+                </a>
+            </div>
+        </aside>
+    </div>
+    <div id="chatListColumn" class="column is-3 has-background-light">
+        <h2 class="title has-text-centered is-size-4">Your chats</h2>
+
+        <div class="tabs is-toggle is-centered">
+            <ul>
+                <li class="is-active">
+                    <a>
+                        <span class="icon is-small">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <span>Personal</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a>
+                        <span class="icon is-small">
+                            <i class="fas fa-users"></i>
+                        </span>
+                        <span>Group</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <ul id="chatList">
+            <li>
+                <a href="">
+                    <div class="columns">
+                        <div class="column is-2">
+                            <figure class="image is-48x48">
+                                <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <div class="content">
+                                <div class="user-info">
+                                    <h3 class="is-size-6">Tom Walker</h3>
+                                    <span class="has-text-grey-light is-size-7">Today</span>
+                                </div>
+                                <p class="has-text-grey-light">Ciao bello, come va? Offerta per i libri?</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div id="chatSingle" class="column is-9 has-background-white">
+        <nav class="level">
+            <!-- Left side -->
+            <div class="level-left">
+                <div class="level-item">
+                    <div class="columns">
+                        <div class="column is-3">
+                            <figure class="image is-48x48">
+                                <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <span class="title is-size-5">John Wayne</span>
+                            <br>
+                            <span class="subtitle is-size-7">Last online: 2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right side -->
+            <div class="level-right">
+                <div class="menu-label">
+                    <a href="" title="Start group chat" class="has-text-grey">
+                        <span class="icon is-large">
+                            <span class="fa-stack fa-2x fa-multiple">
+                                <i class="fas fa-circle fa-stack-2x has-text-light"></i>
+                                <i class="fas fa-user-friends fa-stack-1x"></i>
+                                <i class="fas fa-plus fa-stack-1x"></i>
+                            </span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="messages">
+            <div class="container">
+                <ul>
+                    <li>
+                        <figure class="image is-32x32">
+                            <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                        </figure>
+                        <div class="content">
+                            <div class="message">
+                                <div class="bubble">
+                                    <p>Ciao bello, come va? Offerta per i libri?</p>
+                                </div>
+                            </div>
+                            <span class="has-text-grey-light">13:10</span>
+                        </div>
+                    </li>
+                    <li class="my-message">
+                        <figure class="image is-32x32">
+                            <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                        </figure>
+                        <div class="content">
+                            <div class="message">
+                                <div class="bubble">
+                                    <p>Ciao bello, come va? Offerta per i libri?</p>
+                                </div>
+                            </div>
+                            <span class="has-text-grey-light">13:10</span>
+                        </div>
+                    </li>
+                    <li class="my-message">
+                        <figure class="image is-32x32">
+                            <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                        </figure>
+                        <div class="content">
+                            <div class="message">
+                                <div class="bubble">
+                                    <p>Ciao bello, come va? Offerta per i libri?</p>
+                                </div>
+                            </div>
+                            <span class="has-text-grey-light">13:10</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="send">
+            <form>
+                <input type="text" placeholder="Type a message..." class="has-text-grey-light">
+
+                <span class="icon is-medium prepend">
+                    <i class="far fa-paper-plane"></i>
+                </span>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
