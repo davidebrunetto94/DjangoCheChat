@@ -1,0 +1,12 @@
+In qualità di utente voglio vedere la mia conversazione con un altro utente in modo da poter leggere i messaggi che mi ha inviato
+In qualità di utente voglio vedere la mia rubrica in modo da vedere quali sono i miei contatti
+In qualità di utente voglio scrivere un messaggio in modo da rispondere in una conversazione
+In qualità di utente voglio creare un gruppo in modo da avere conversazioni con diverse persone
+In qualità di utente voglio eliminare una conversazione in modo da non averla più a disposizione
+In qualità di utente voglio entrare nell'applicazione in modo da poterla utilizzare
+In qualità di gestore di un gruppo voglio modificarne il nome in modo da distinguerlo dagli altri
+In qualità di gestore di un gruppo voglio aggiungere le persone dalla rubrica in modo che ne facciano parte
+In qualità di gestore di un gruppo voglio eliminare una persona che ne fa parte in modo che non partecipi più alla conversazione
+In qualità di membro di un gruppo voglio uscirne in modo da non ricevere più i suoi messaggi
+In qualità di membro di un gruppo voglio vedere la lista dei suoi componenti in modo da sapere chi ne fa parte
+In qualità di membro di un gruppo voglio aggiungere uno dei componenti alla rubrica in modo da salvarne il contatto
