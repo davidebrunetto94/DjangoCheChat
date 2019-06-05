@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
-from CheChatApp.models import Chat
+from CheChatApp.models import Chat, PhoneBook
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 import requests
@@ -75,5 +75,30 @@ def get_participants(request, chat_id):
         'state': 'successful',
         'participants': list(chat.participants.values('id', 'username'))
     }
+
+    return JsonResponse(response)
+
+
+
+def get_contacts(request):
+    phonebook = PhoneBook.objects.filter(owner=request.user)
+
+    response = {
+        'state' : 'successful',
+        'contacts' : list(phonebook.values('contacts'))
+    }
+
+    return JsonResponse(response)
+
+
+def add_phonebook_contact(request, added_user_id):
+    phonebook = PhoneBook.objects.get(owner=request.user)
+    error = phonebook.contacts.filter(id=added_user_id).exists() or not User.objects.filter(id=added_user_id).exists()
+
+    if error:
+        response = { 'state' : 'fail' }
+    else:
+        phonebook.contacts.add(User.objects.get(id=added_user_id))
+        response = { 'state' : 'successful' }
 
     return JsonResponse(response)
