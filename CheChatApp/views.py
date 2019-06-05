@@ -4,7 +4,7 @@ from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
 from CheChatApp.models import Chat
 from django.contrib.auth.models import User
-from django.http import  JsonResponse
+from django.http import JsonResponse
 import requests
 
 
@@ -44,7 +44,7 @@ def logout(request):
 
 def new_chat(request, user_id):
     chat = Chat.objects.create()
-    requests.get('http://' + request.get_host() + '/chat/addParticipant/' + str(user_id) + '/' + str(chat.id))
+    requests.get('http://' + request.get_host() + '/chat/add/participant/' + str(user_id) + '/' + str(chat.id))
 
     response = {
         'state': 'successful'
@@ -52,7 +52,7 @@ def new_chat(request, user_id):
     return JsonResponse(response)
 
 
-def add_participants(request, user_id, chat_id):
+def add_participant(request, user_id, chat_id):
     chat = Chat.objects.filter(id=chat_id)
     if chat[0].participants.filter(id=user_id).exists():
         response = {
@@ -65,4 +65,15 @@ def add_participants(request, user_id, chat_id):
     response = {
         'state': 'successful'
     }
+    return JsonResponse(response)
+
+
+def get_participants(request, chat_id):
+    chat = Chat.objects.get(id=chat_id)
+
+    response = {
+        'state': 'successful',
+        'participants': list(chat.participants.values('id', 'username'))
+    }
+
     return JsonResponse(response)
