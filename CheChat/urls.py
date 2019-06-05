@@ -22,7 +22,8 @@ urlpatterns = [
     path('account/logout/', views.logout, name='logout'),
     path(r'users/', views.user_listing),
     path('', views.login, name='login'),
-    path('chat/new/<user_id>', views.new_chat, name='user_id'),
+    path('chat/new', views.new_chat, name='user_id'),
+    path('chat/new/<title>', views.new_chat),
     path('chat/add/participant/<user_id>/<chat_id>', views.add_participant, name='info'),
     path('chat/get/participants/<chat_id>', views.get_participants)
 ]

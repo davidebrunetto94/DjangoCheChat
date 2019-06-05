@@ -5,7 +5,6 @@ from django.shortcuts import render, redirect
 from CheChatApp.models import Chat
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-import requests
 
 
 def user_listing(request):
@@ -42,38 +41,79 @@ def logout(request):
     return redirect('login')
 
 
-def new_chat(request, user_id):
-    chat = Chat.objects.create()
-    requests.get('http://' + request.get_host() + '/chat/add/participant/' + str(user_id) + '/' + str(chat.id))
+def new_chat(request, title=""):
+    """Create a new"""
 
-    response = {
-        'state': 'successful'
-    }
+    # TODO: controllare se l'utente è amico
+
+    if request.user.is_authenticated:
+        chat = Chat.objects.create(title=title)
+        chat.save()
+
+        add_participant(request, request.user.id, chat.id)
+
+        response = {
+            'state': 'successful',
+            'id': chat.id
+        }
+    else:
+        response = {
+            'state': 'no auth'
+        }
+
     return JsonResponse(response)
 
 
 def add_participant(request, user_id, chat_id):
-    chat = Chat.objects.filter(id=chat_id)
-    if chat[0].participants.filter(id=user_id).exists():
+    """Add a participant to a chat"""
+
+    if is_participants(chat_id, request.user.id) or request.user.id == user_id:
+
+        chat = Chat.objects.filter(id=chat_id)
+
+        if chat[0].participants.filter(id=user_id).exists():
+            response = {
+                'state': 'user exists'
+            }
+        else:
+            chat[0].participants.add(user_id)
+
+            response = {
+                'state': 'successful'
+            }
+    else:
         response = {
-            'state': 'user exists'
+            'state': 'not a participant'
         }
-        return JsonResponse(response)
 
-    chat[0].participants.add(user_id)
-
-    response = {
-        'state': 'successful'
-    }
     return JsonResponse(response)
 
 
 def get_participants(request, chat_id):
-    chat = Chat.objects.get(id=chat_id)
+    """Get participants of a chat"""
 
-    response = {
-        'state': 'successful',
-        'participants': list(chat.participants.values('id', 'username'))
-    }
+    if is_participants(chat_id, request.user.id):
+        chat = Chat.objects.get(id=chat_id)
+
+        response = {
+            'state': 'successful',
+            'participants': list(chat.participants.values('id', 'username'))
+        }
+    else:
+        response = {
+            'state': 'not a participant'
+        }
 
     return JsonResponse(response)
+
+
+def is_participants(chat_id, user_id):
+    """Check if the user is a participant of the chat"""
+
+    chat = Chat.objects.get(id=chat_id)
+
+    for participant in chat.participants.values_list():
+        if participant[0] == user_id:
+            return True
+
+    return False
