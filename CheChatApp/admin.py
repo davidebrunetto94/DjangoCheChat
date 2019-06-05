@@ -21,5 +21,6 @@ class UserAdmin(BaseUserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(ChatUser)
+admin.site.register(Chat)
 admin.site.register(PhoneBook)
 admin.site.register(Message)

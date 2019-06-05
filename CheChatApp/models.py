@@ -11,7 +11,7 @@ class ChatUser(models.Model):
 class Chat(models.Model):
     title = models.CharField('Title', max_length=30)
     # se non è un gruppo, title = None
-    participants = models.ManyToManyField(User)
+    participants = models.ManyToManyField(User, null=True, blank=True, default=None)
 
 class PhoneBook(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='+', primary_key=True)
