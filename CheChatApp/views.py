@@ -44,7 +44,7 @@ def logout(request):
 def new_chat(request, title=""):
     """Create a new"""
 
-    # TODO: controllare se l'utente è amico
+    # TODO: controllare se l'utente Ã¨ amico
 
     if request.user.is_authenticated:
         chat = Chat.objects.create(title=title)
@@ -120,7 +120,10 @@ def get_contacts(request):
 
 
 def add_phonebook_contact(request, added_user_id):
+    if not PhoneBook.objects.filter(owner=request.user).exists():
+        PhoneBook(owner=request.user).save()
     phonebook = PhoneBook.objects.get(owner=request.user)
+
     error = phonebook.contacts.filter(id=added_user_id).exists() or not User.objects.filter(id=added_user_id).exists()
 
     if error:
