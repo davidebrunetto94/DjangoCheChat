@@ -2,8 +2,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
-
+from CheChatApp.models import Chat
 from django.contrib.auth.models import User
+import requests
 
 
 def user_listing(request):
@@ -38,3 +39,16 @@ def logout(request):
     """Logout views"""
     auth_logout(request)
     return redirect('login')
+
+
+def new_chat(request, userId):
+    chat = Chat.objects.create()
+
+    requests.get('http://' + request.get_host() + '/chat/addParticipant/' + str(userId) + '/' + str(chat.id))
+
+
+def add_participants(request, userId, chatId):
+    chat = Chat.objects.filter(id=chatId)
+    print(chat)
+    chat[0].participants.add(userId)
+
