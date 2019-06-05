@@ -44,7 +44,7 @@ def logout(request):
 def new_chat(request, title=""):
     """Create a new"""
 
-    # TODO: controllare se l'utente Ã¨ amico
+    # TODO: controllare se l'utente è amico
 
     if request.user.is_authenticated:
         chat = Chat.objects.create(title=title)
@@ -107,7 +107,6 @@ def get_participants(request, chat_id):
     return JsonResponse(response)
 
 
-<<<<<<< HEAD
 
 def get_contacts(request):
     phonebook = PhoneBook.objects.filter(owner=request.user)
@@ -131,7 +130,8 @@ def add_phonebook_contact(request, added_user_id):
         response = { 'state' : 'successful' }
 
     return JsonResponse(response)
-=======
+
+
 def is_participants(chat_id, user_id):
     """Check if the user is a participant of the chat"""
 
@@ -142,4 +142,3 @@ def is_participants(chat_id, user_id):
             return True
 
     return False
->>>>>>> aa89237a677a0faead45d5adb4ff25290e112f94
