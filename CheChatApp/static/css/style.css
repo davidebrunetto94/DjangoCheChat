@@ -265,6 +265,11 @@ html, body {
     padding: 0 15px;
 }
 
+#chatSingle .delete-chat {
+    margin-top: -10px;
+    margin-left: 10px;
+}
+
 @keyframes shake
 {
     15%
