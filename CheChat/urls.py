@@ -27,5 +27,6 @@ urlpatterns = [
     path('chat/new', views.new_chat, name='user_id'),
     path('chat/new/<title>', views.new_chat),
     path('chat/add/participant/<user_id>/<chat_id>', views.add_participant, name='info'),
-    path('chat/get/participants/<chat_id>', views.get_participants)
+    path('chat/get/participants/<chat_id>', views.get_participants),
+    path('chat/change/title/<user_id>/<chat_id>/<new_chat_title>', views.change_chat_title)
 ]

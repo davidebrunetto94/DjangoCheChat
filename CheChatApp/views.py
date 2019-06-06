@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from CheChatApp.models import Chat, PhoneBook
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.contrib.auth import get_user_model
+
 
 
 def user_listing(request):
@@ -54,7 +56,8 @@ def new_chat(request, title=""):
 
         response = {
             'state': 'successful',
-            'id': chat.id
+            'id': chat.id,
+            'owner_id': chat.participants.values_list()[0][0]
         }
     else:
         response = {
@@ -84,7 +87,6 @@ def add_participant(request, user_id, chat_id):
             }
         else:
             chat[0].participants.add(user_id)
-
             response = {
                 'state': 'successful'
             }
@@ -152,3 +154,23 @@ def is_participants(chat_id, user_id):
             return True
 
     return False
+
+def change_chat_title(request, user_id, chat_id, new_chat_title):
+    chat = Chat.objects.get(id=chat_id)
+    chat_owner_id = chat.participants.values_list()[0][0]
+    print(chat)
+    if (chat_owner_id == request.user.id):
+        #This means the user is the one who created the chat
+        Chat.objects.get(id=chat_id).Title = new_chat_title
+        print("if")
+        response = {
+            'state': 'successful',
+        }
+
+    else:
+        response = {
+            'state': 'unsuccessful',
+        }
+        print("Not the owner")
+
+    return JsonResponse(response)
