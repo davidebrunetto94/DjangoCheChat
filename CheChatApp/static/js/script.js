@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var addressList = document.getElementById('addressList')
 
     var addFriend = document.getElementById('addFriend')
+    var addFriendButton = document.getElementById('addFriendButton')
 
     var newChatA = document.querySelector('#newChatA') // new chat ahref
     var chatA = document.querySelector('#chatA'); // list chat href
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reset all view
     function resetView() {
         realChatList.classList.add('is-hidden');
-        
+
         newChat.classList.add('is-hidden');
 
         newChatGroup.classList.add('is-hidden');
@@ -157,27 +158,17 @@ document.addEventListener('DOMContentLoaded', () => {
         updateAdressBook()
     });
 
-    // Add friends button listener
-    addFriendA.addEventListener("click", function (event) {
-        event.preventDefault();
-        resetView();
-
-        chatListColumnTitle.innerHTML = "Add an user"
-
-        addFriend.classList.remove('is-hidden')
-    });
-
     // Update address list on adressbook
-    function updateAdressBook(){
+    async function updateAdressBook() {
         addressList.innerHTML = ""
-        loadJSON('account/contacts/').then(async function (response) {
+        await loadJSON('account/contacts/').then(async function (response) {
             response = JSON.parse(response)
 
-            for(let userId in response.contacts){
+            for (let userId in response.contacts) {
                 userId = response.contacts[userId]
                 await loadJSON('users/get/' + userId).then(function (response) {
                     response = JSON.parse(response)
-                    
+
                     addressList.innerHTML += `
                 <li>
                     <div class="columns">
@@ -191,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <div class="user-info">
                                     <h3 class="is-size-6"> ` + response.username + `</h3>
                                     <span class="has-text-grey-light is-size-7">
-                                        <a href="">
+                                        <a class="deleteFriend" data-id="` + userId + `" href="">
                                             <i class="fas fa-user-minus"></i>
                                         </a>
                                     </span>
@@ -204,6 +195,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 });
             }
+        });
+
+        deleteFriendListener();
+    }
+
+    // Add friends listener
+    addFriendA.addEventListener("click", function (event) {
+        event.preventDefault();
+        resetView();
+
+        chatListColumnTitle.innerHTML = "Add an user"
+
+        addFriend.classList.remove('is-hidden')
+    });
+
+    // Add friends button listener
+    addFriendButton.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        username = document.getElementById('friendName').value;
+
+        loadJSON('users/get/id/' + username).then(function (response) {
+            response = JSON.parse(response)
+
+            if (response.state == 'successful') {
+                loadJSON('account/contacts/add/' + response.id).then(function (response) {
+                    response = JSON.parse(response)
+
+                    if (response.state == 'successful') {
+                        success(response.state)
+                    } else {
+                        bad(response.state)
+                    }
+                });
+            } else {
+                bad(response.state)
+            }
+        });
+
+        document.getElementById('friendName').value = ""
+    });
+
+    // Create delete friend listener
+    function deleteFriendListener() {
+        var classes = document.querySelectorAll('.deleteFriend');
+
+        Array.from(classes).forEach(function (element) {
+            element.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                userId = element.dataset.id;
+
+                loadJSON('account/contacts/remove/' + userId).then(function (response) {
+                    if(response.state == 'successful'){
+                        success(response.state)
+                    } else {
+                        bad(response.state)
+                    }
+                });
+            });
         });
     }
 });

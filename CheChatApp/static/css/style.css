@@ -8,8 +8,13 @@ html, body {
     background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }
 
-/** LOGIN */
+/** Notifications */
+#somethingBad,
+#done {
+    text-transform: capitalize;
+}
 
+/** LOGIN */
 #login {
     height: 100%;
     display: grid;
