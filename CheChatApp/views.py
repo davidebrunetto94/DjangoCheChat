@@ -65,9 +65,16 @@ def new_chat(request, title=""):
 
 
 def add_participant(request, user_id, chat_id):
-    """Add a participant to a chat"""
+    """
+        Add a participant to a chat
+        Only participants of a chat can add other
+        An user can add himself, only if the chat doesn't have any participants (so it's the creator)
+    """
 
-    if is_participants(chat_id, request.user.id) or request.user.id == user_id:
+    # TODO: controllare gli il participiant sia amico dell'utente che aggiunge
+
+    if is_participants(chat_id, request.user.id) or \
+            (request.user.id == int(user_id) and len(Chat.objects.get(id=chat_id).participants.values_list()) == 0):
 
         chat = Chat.objects.filter(id=chat_id)
 
@@ -112,8 +119,8 @@ def get_contacts(request):
     phonebook = PhoneBook.objects.filter(owner=request.user)
 
     response = {
-        'state' : 'successful',
-        'contacts' : list(phonebook.values('contacts'))
+        'state': 'successful',
+        'contacts': list(phonebook.values('contacts'))
     }
 
     return JsonResponse(response)
@@ -127,10 +134,10 @@ def add_phonebook_contact(request, added_user_id):
     error = phonebook.contacts.filter(id=added_user_id).exists() or not User.objects.filter(id=added_user_id).exists()
 
     if error:
-        response = { 'state' : 'fail' }
+        response = {'state': 'fail'}
     else:
         phonebook.contacts.add(User.objects.get(id=added_user_id))
-        response = { 'state' : 'successful' }
+        response = {'state': 'successful'}
 
     return JsonResponse(response)
 
