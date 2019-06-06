@@ -6,7 +6,6 @@ from CheChatApp.models import Chat, PhoneBook, ChatUser
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
-
 def user_listing(request):
     """View with the list of users"""
     return render(request, 'users/user_listing.html', {'users': User.objects.all()})
