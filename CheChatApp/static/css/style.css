@@ -123,7 +123,6 @@ html, body {
 }
 
 /* Chat list column */
-
 #chatListColumn {
     overflow: auto;
     min-width: 260px;
@@ -166,8 +165,11 @@ html, body {
     white-space: nowrap;
 }
 
-/* Chat single columns */
+#checkAddFriends .checkbox {
+    margin-right: 20px;
+}
 
+/* Chat single columns */
 #chatSingle nav {
     width: 88%;
     min-width: 584px;
@@ -280,6 +282,8 @@ html, body {
     margin-left: 10px;
 }
 
+
+/* Shake animation button */
 @keyframes shake
 {
     15%

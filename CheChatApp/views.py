@@ -5,8 +5,6 @@ from django.shortcuts import render, redirect
 from CheChatApp.models import Chat, PhoneBook, ChatUser
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.contrib.auth import get_user_model
-
 
 
 def user_listing(request):
@@ -18,12 +16,12 @@ def get_user_info(request, user_id):
     """Get user info"""
 
     user = User.objects.filter(id=user_id).values_list('username', 'last_login')
-    chatUser = ChatUser.objects.filter(user_id=user_id).values_list('profileImage', flat=True)
+    chat_user = ChatUser.objects.filter(user_id=user_id).values_list('profileImage', flat=True)
 
     if user.exists():
 
-        if(chatUser.exists()):
-            thumbnail = list(chatUser)[0]
+        if chat_user.exists():
+            thumbnail = list(chat_user)[0]
         else:
             thumbnail = ''
 
@@ -38,6 +36,7 @@ def get_user_info(request, user_id):
         }
 
     return JsonResponse(response)
+
 
 def get_id_from_username(request, username):
     """Get id by username"""
@@ -174,6 +173,8 @@ def add_contact(request, added_user_id):
         response = {'state': 'user not found'}
     elif phonebook.contacts.filter(id=added_user_id).exists():
         response = {'state': 'already friend'}
+    elif request.user.id == int(added_user_id):
+        response = {'state': 'you cannot add yourself'}
     else:
         phonebook.contacts.add(User.objects.get(id=added_user_id))
         response = {'state': 'successful'}

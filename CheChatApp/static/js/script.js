@@ -54,12 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Success box (chatlist)
     function success(message) {
+        somethingBad.classList.add('is-hidden')
         done.classList.remove('is-hidden')
         done.innerHTML = message
     }
 
     // Bad box (chatlist)
     function bad(message) {
+        done.classList.add('is-hidden')
         somethingBad.classList.remove('is-hidden');
         somethingBad.innerHTML = message;
     }
@@ -70,8 +72,30 @@ document.addEventListener('DOMContentLoaded', () => {
         resetView()
         chatListColumnTitle.innerHTML = "New chat";
         newChat.classList.remove('is-hidden');
+
+        loadFriendsSingleChat();
     });
 
+    // Load friends single chat
+    function loadFriendsSingleChat() {
+        document.getElementById('selectUserToChat').innerHTML = "<option>Select user</option>";
+
+        loadJSON('account/contacts/').then(async function (response) {
+            response = JSON.parse(response);
+
+            for (let userId in response.contacts) {
+                userId = response.contacts[userId]
+
+                await loadJSON('users/get/' + userId).then(function (response) {
+                    response = JSON.parse(response)
+
+                    document.getElementById('selectUserToChat').innerHTML += '<option value="' + userId + '"> ' + response.username + ' </option>'
+                });
+            }
+        });
+    }
+
+    // Start chat button listener
     document.querySelector('#startChat').addEventListener("click", function () {
         var e = document.getElementById("selectUserToChat");
         var userId = e.options[e.selectedIndex].value;
@@ -111,9 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
         resetView();
         newChatGroup.classList.remove('is-hidden');
         chatListColumnTitle.innerHTML = "New group chat"
+
+        loadFriendsGroupChat();
     });
 
-    // Create a new chat
+    // Create a new group chat
     document.querySelector('#startGroupChat').addEventListener("click", function () {
         var users = document.querySelectorAll('.checkUser:checked');
         var title = document.getElementById('groupChatTitle').value;
@@ -143,6 +169,28 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('groupChatTitle').value = ""
     });
 
+    // Load friends group chat
+    function loadFriendsGroupChat() {
+        document.getElementById('checkAddFriends').innerHTML = "";
+
+        loadJSON('account/contacts/').then(async function (response) {
+            response = JSON.parse(response);
+
+            for (let userId in response.contacts) {
+                userId = response.contacts[userId]
+
+                await loadJSON('users/get/' + userId).then(function (response) {
+                    response = JSON.parse(response)
+
+                    document.getElementById('checkAddFriends').innerHTML +=  `
+                <label class="checkbox">
+                    <input type="checkbox" class="checkUser" value="` + userId + `"> ` + response.username + `
+                </label>`;
+                });
+            }
+        });
+    }
+
     /* Address book */
     // Address book click listener
     addressBookA.addEventListener("click", function (event) {
@@ -166,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             for (let userId in response.contacts) {
                 userId = response.contacts[userId]
+                
                 await loadJSON('users/get/' + userId).then(function (response) {
                     response = JSON.parse(response)
 
@@ -248,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 userId = element.dataset.id;
 
                 loadJSON('account/contacts/remove/' + userId).then(function (response) {
-                    if(response.state == 'successful'){
+                    if (response.state == 'successful') {
                         success(response.state)
                     } else {
                         bad(response.state)
