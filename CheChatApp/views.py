@@ -39,6 +39,17 @@ def get_user_info(request, user_id):
 
     return JsonResponse(response)
 
+def get_id_from_username(request, username):
+    """Get id by username"""
+    user = User.objects.filter(username=username).values_list('id', flat=True)
+
+    if user.exists():
+        response = {'state': 'successful', 'id': list(user)[0]}
+    else:
+        response = {'state': 'username not found'}
+
+    return JsonResponse(response)
+
 
 def login(request):
     """Login view"""
@@ -159,10 +170,10 @@ def add_contact(request, added_user_id):
 
     phonebook = PhoneBook.objects.get(owner=request.user)
 
-    error = phonebook.contacts.filter(id=added_user_id).exists() or not User.objects.filter(id=added_user_id).exists()
-
-    if error:
-        response = {'state': 'fail'}
+    if not User.objects.filter(id=added_user_id).exists():
+        response = {'state': 'user not found'}
+    elif phonebook.contacts.filter(id=added_user_id).exists():
+        response = {'state': 'already friend'}
     else:
         phonebook.contacts.add(User.objects.get(id=added_user_id))
         response = {'state': 'successful'}

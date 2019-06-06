@@ -24,6 +24,7 @@ urlpatterns = [
     path('account/contacts/add/<added_user_id>', views.add_contact),
     path(r'users/', views.user_listing),
     path('users/get/<user_id>', views.get_user_info),
+    path('users/get/id/<username>', views.get_id_from_username),
     path('', views.login, name='login'),
     path('chat/new', views.new_chat, name='user_id'),
     path('chat/new/<title>', views.new_chat),
