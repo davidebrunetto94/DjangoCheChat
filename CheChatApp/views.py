@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
-from CheChatApp.models import Chat, PhoneBook
+from CheChatApp.models import Chat, PhoneBook, ChatUser
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
@@ -10,6 +10,31 @@ from django.http import JsonResponse
 def user_listing(request):
     """View with the list of users"""
     return render(request, 'users/user_listing.html', {'users': User.objects.all()})
+
+
+def get_user_info(request, user_id):
+    """Get user info"""
+
+    user = User.objects.filter(id=user_id).values('username')
+    chatUser = ChatUser.objects.filter(user_id=user_id).values('profileImage')
+
+    if user.exists():
+
+        if(chatUser.exists()):
+            thumbnail = list(chatUser)[0]
+        else:
+            thumbnail = ''
+
+        response = {
+            'username': list(user)[0],
+            'thumbnail': thumbnail
+        }
+    else:
+        response = {
+            'state': 'user not found'
+        }
+
+    return JsonResponse(response)
 
 
 def login(request):
@@ -114,7 +139,6 @@ def get_participants(request, chat_id):
     return JsonResponse(response)
 
 
-
 def get_contacts(request):
     phonebook = PhoneBook.objects.filter(owner=request.user)
 
@@ -126,9 +150,10 @@ def get_contacts(request):
     return JsonResponse(response)
 
 
-def add_phonebook_contact(request, added_user_id):
+def add_contact(request, added_user_id):
     if not PhoneBook.objects.filter(owner=request.user).exists():
         PhoneBook(owner=request.user).save()
+
     phonebook = PhoneBook.objects.get(owner=request.user)
 
     error = phonebook.contacts.filter(id=added_user_id).exists() or not User.objects.filter(id=added_user_id).exists()
