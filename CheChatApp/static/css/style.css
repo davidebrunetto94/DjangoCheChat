@@ -8,8 +8,13 @@ html, body {
     background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }
 
-/** LOGIN */
+/** Notifications */
+#somethingBad,
+#done {
+    text-transform: capitalize;
+}
 
+/** LOGIN */
 #login {
     height: 100%;
     display: grid;
@@ -118,50 +123,65 @@ html, body {
 }
 
 /* Chat list column */
-
 #chatListColumn {
     overflow: auto;
     min-width: 260px;
 }
 
 #chatListColumn .title,
-#chatList ul {
+#chatList {
     margin-top: 50px;
 }
 
-#chatList li:hover{
+#chatList li:hover,
+#addressList li:hover{
     border-bottom: 2px solid hsl(217, 71%, 53%);
 }
 
-#chatList li {
+#chatList li,
+#addressList li {
     border-bottom: 2px solid transparent;
     padding: 25px 0;
     transition: border-bottom 1s;
 }
 
-#chatList .user-info {
+#chatList .user-info,
+#addressList .user-info {
     margin-bottom: 10px;
     display: flex;
     align-items: flex-start;
 }
 
-#chatList li h3 {
+#chatList li h3,
+#addressList li h3 {
     margin-right: auto;
     margin-bottom: 0;
     line-height: 1;
 }
 
-#chatList li a span {
+#chatList li a span,
+#addressList li a span {
     margin-left: 30px;
     white-space: nowrap;
 }
 
-/* Chat single columns */
+#checkAddFriends .checkbox {
+    margin-right: 20px;
+}
 
+/* Chat single columns */
 #chatSingle nav {
     width: 88%;
     min-width: 584px;
     padding: 30px;
+}
+
+#chatTitle {
+    cursor: pointer;
+}
+
+#chatTitle div {
+    display: flex;
 }
 
 #chatSingle .messages {
@@ -247,22 +267,16 @@ html, body {
 }
 
 #chatSingle .send input[type="text"] {
-    width: 88%;
-    height: 55px;
+    height: 100%;
     background: #f5f5f5;
     padding: 15px 50px 15px 20px;
     border: none;
     border-radius: 5px;
 }
 
-#chatSingle .send .icon {
-    position: absolute;
-    top: auto;
-    bottom: 40px;
-    right: 30px;
-    left: auto;
-    line-height: 0;
-    padding: 0 15px;
+#chatSingle .send .control {
+    width: 88%;
+    height: 45px;
 }
 
 #chatSingle .delete-chat {
@@ -270,6 +284,8 @@ html, body {
     margin-left: 10px;
 }
 
+
+/* Shake animation button */
 @keyframes shake
 {
     15%

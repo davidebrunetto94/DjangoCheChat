@@ -131,7 +131,7 @@
                     <a href="">
                         <div class="columns">
                             <div class="column is-2">
-                                <figure class="image is-48x48">
+                                <figure class="imageis-square">
                                     <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
                                 </figure>
                             </div>
@@ -156,8 +156,6 @@
                 <div class="control has-text-centered">
                     <div class="select">
                         <select id="selectUserToChat">
-                            <option>Select user</option>
-                            <option value="2">User2</option>
                         </select>
                     </div>
                 </div>
@@ -172,29 +170,7 @@
         </div>
 
         <div id="addressBook" class="is-hidden">
-            <ul id="chatList">
-                <li>
-                    <div class="columns">
-                        <div class="column is-2">
-                            <figure class="image is-48x48">
-                                <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
-                            </figure>
-                        </div>
-                        <div class="column">
-                            <div class="content">
-                                <div class="user-info">
-                                    <h3 class="is-size-6">Tom Walker</h3>
-                                    <span class="has-text-grey-light is-size-7">
-                                        <a href="">
-                                            <i class="fas fa-user-minus"></i>
-                                        </a>
-                                    </span>
-                                </div>
-                                <p class="has-text-grey-light">Last access: Never</p>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+            <ul id="addressList">
             </ul>
         </div>
 
@@ -208,23 +184,9 @@
 
             <div class="field">
                 <label class="label">With who you wanna chat?</label>
-                <div class="control has-text-centered">
-                    <label class="checkbox">
-                        <input type="checkbox" class="checkUser" value="2"> User2
-                    </label>
-                    <label class="checkbox">
-                        <input type="checkbox" class="checkUser" value="3"> User3
-                    </label>
-                    <br>
-                    <label class="checkbox">
-                        <input type="checkbox" class="checkUser" value="4"> User4
-                    </label>
-                    <label class="checkbox">
-                        <input type="checkbox" class="checkUser" value="2"> User2
-                    </label>
+                <div id="checkAddFriends" class="control has-text-centered">
                 </div>
             </div>
-
 
             <div class="field">
                 <div class="control has-text-centered">
@@ -262,7 +224,17 @@
                             </figure>
                         </div>
                         <div class="column">
-                            <span class="title is-size-5">John Wayne</span>
+                            <span id="chatTitle" class="title is-size-5" data-id="10">
+                                <span>John Wayne</span>
+                                <div class="is-hidden">
+                                    <input class="input" type="text">
+                                    <a id="changeTitle" class="button">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                            </span>
                             <br>
                             <span class="subtitle is-size-7">Last online: 2 days ago</span>
                         </div>
@@ -343,13 +315,14 @@
         </div>
 
         <div class="send">
-            <form>
-                <input type="text" placeholder="Type a message..." class="has-text-grey-light">
-
-                <span class="icon is-medium prepend">
-                    <i class="far fa-paper-plane"></i>
-                </span>
-            </form>
+            <div class="field">
+                <p class="control has-icons-right">
+                    <input class="input" type="text" placeholder="Type a message..." class="has-text-grey-light">
+                    <span class="icon is-small is-right">
+                        <i class="far fa-paper-plane"></i>
+                    </span>
+                </p>
+            </div>
         </div>
     </div>
 </div>

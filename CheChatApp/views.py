@@ -5,8 +5,6 @@ from django.shortcuts import render, redirect
 from CheChatApp.models import Chat, PhoneBook, ChatUser
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.contrib.auth import get_user_model
-
 
 
 def user_listing(request):
@@ -17,24 +15,37 @@ def user_listing(request):
 def get_user_info(request, user_id):
     """Get user info"""
 
-    user = User.objects.filter(id=user_id).values('username')
-    chatUser = ChatUser.objects.filter(user_id=user_id).values('profileImage')
+    user = User.objects.filter(id=user_id).values_list('username', 'last_login')
+    chat_user = ChatUser.objects.filter(user_id=user_id).values_list('profileImage', flat=True)
 
     if user.exists():
 
-        if(chatUser.exists()):
-            thumbnail = list(chatUser)[0]
+        if chat_user.exists():
+            thumbnail = list(chat_user)[0]
         else:
             thumbnail = ''
 
         response = {
-            'username': list(user)[0],
-            'thumbnail': thumbnail
+            'username': list(user)[0][0],
+            'thumbnail': thumbnail,
+            'lastlogin': list(user)[0][1].strftime('%d %b %Y')
         }
     else:
         response = {
             'state': 'user not found'
         }
+
+    return JsonResponse(response)
+
+
+def get_id_from_username(request, username):
+    """Get id by username"""
+    user = User.objects.filter(username=username).values_list('id', flat=True)
+
+    if user.exists():
+        response = {'state': 'successful', 'id': list(user)[0]}
+    else:
+        response = {'state': 'username not found'}
 
     return JsonResponse(response)
 
@@ -146,7 +157,7 @@ def get_contacts(request):
 
     response = {
         'state': 'successful',
-        'contacts': list(phonebook.values('contacts'))
+        'contacts': list(phonebook.values_list('contacts', flat=True))
     }
 
     return JsonResponse(response)
@@ -158,10 +169,12 @@ def add_contact(request, added_user_id):
 
     phonebook = PhoneBook.objects.get(owner=request.user)
 
-    error = phonebook.contacts.filter(id=added_user_id).exists() or not User.objects.filter(id=added_user_id).exists()
-
-    if error:
-        response = {'state': 'fail'}
+    if not User.objects.filter(id=added_user_id).exists():
+        response = {'state': 'user not found'}
+    elif phonebook.contacts.filter(id=added_user_id).exists():
+        response = {'state': 'already friend'}
+    elif request.user.id == int(added_user_id):
+        response = {'state': 'you cannot add yourself'}
     else:
         phonebook.contacts.add(User.objects.get(id=added_user_id))
         response = {'state': 'successful'}
@@ -180,22 +193,26 @@ def is_participants(chat_id, user_id):
 
     return False
 
-def change_chat_title(request, user_id, chat_id, new_chat_title):
+
+def change_chat_title(request, chat_id, new_chat_title):
+    """
+    Change the title of a chat
+    Only the creator can
+    """
     chat = Chat.objects.get(id=chat_id)
     chat_owner_id = chat.participants.values_list()[0][0]
-    print(chat)
-    if (chat_owner_id == request.user.id):
-        #This means the user is the one who created the chat
-        Chat.objects.get(id=chat_id).Title = new_chat_title
-        print("if")
+
+    if chat_owner_id == request.user.id:
+        chat = Chat.objects.get(id=chat_id)
+        chat.title = new_chat_title
+        chat.save()
+
         response = {
             'state': 'successful',
         }
-
     else:
         response = {
-            'state': 'unsuccessful',
+            'state': 'not the owner',
         }
-        print("Not the owner")
 
     return JsonResponse(response)

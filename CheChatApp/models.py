@@ -15,7 +15,7 @@ class Chat(models.Model):
 
 class PhoneBook(models.Model):
     owner = models.OneToOneField(User, on_delete=models.CASCADE, related_name='+', primary_key=True)
-    contacts = models.ManyToManyField(User)
+    contacts = models.ManyToManyField(User, blank=True, default=None)
 
 
 class Message(models.Model):
