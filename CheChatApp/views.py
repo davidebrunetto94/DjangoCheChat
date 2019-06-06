@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
-from CheChatApp.models import Chat, PhoneBook, ChatUser
+from CheChatApp.models import Chat, PhoneBook, ChatUser, Message
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
@@ -180,6 +180,41 @@ def add_contact(request, added_user_id):
         response = {'state': 'successful'}
 
     return JsonResponse(response)
+
+def delete_contact(request, user_to_delete_id):
+    phonebook = PhoneBook.objects.get(owner=request.user)
+
+    if not User.objects.filter(id=user_to_delete_id).exists() or not phonebook.contacts.filter(id=user_to_delete_id).exists():
+        response = {'state' : 'user does not exist'}
+    elif phonebook.contacts.filter(id=user_to_delete_id).exists():
+        response = {'state' : 'successful'}
+        phonebook.contacts.get(id=user_to_delete_id).delete()
+
+    return JsonResponse(response)
+
+# TODO vedere se funziona
+def send_message(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id)
+    if not chat.exists() or not Chat.objects.get(id=chat_id).participants.filter(id=request.id).exists():
+        response = {'state' : 'chat does not exist'}
+    else:
+        Message(text=request.POST.get('message_body'), sender=request.user.id, chat=chat_id).save()
+        response = {'state' : 'successful'}
+    return JsonResponse(response)
+
+
+# semmai dovesse servire, altrimenti cancellare
+"""def get_chat_messages(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id)
+    if not chat.exists() or not Chat.objects.get(id=chat_id).participants.filter(id=request.user.id).exists():
+        response = {'state' : 'chat does not exist'}
+    else:
+        messages = Message.objects.filter(chat=chat_id).order_by('-timestamp')
+        response = {
+            'state' : 'successful',
+            'messages' : list(messages.values_list('sender', 'text', 'timestamp'))
+        }
+    return JsonResponse(response)"""
 
 
 def is_participants(chat_id, user_id):
