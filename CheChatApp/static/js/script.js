@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var newChatGroup = document.getElementById('newChatGroup')
 
     var addressBook = document.getElementById('addressBook')
+    var addressList = document.getElementById('addressList')
 
     var addFriend = document.getElementById('addFriend')
 
@@ -62,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         somethingBad.innerHTML = message;
     }
 
-    //New chat
+    // New chat
     newChatA.addEventListener("click", function (event) {
         event.preventDefault()
         resetView()
@@ -93,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //View chats
+    /* Chats */
+    // View chats
     chatA.addEventListener("click", function (event) {
         event.preventDefault()
         resetView()
@@ -101,7 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
         realChatList.classList.remove('is-hidden');
     });
 
-    //New chat group
+    /* Chat group */
+    // Create chat group click listener
     newChatGroupA.addEventListener("click", function (event) {
         event.preventDefault()
         resetView();
@@ -109,11 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
         chatListColumnTitle.innerHTML = "New group chat"
     });
 
+    // Create a new chat
     document.querySelector('#startGroupChat').addEventListener("click", function () {
         var users = document.querySelectorAll('.checkUser:checked');
         var title = document.getElementById('groupChatTitle').value;
 
-        // Create new chat
         loadJSON('chat/new/' + title).then(async function (response) {
             response = JSON.parse(response)
 
@@ -139,7 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('groupChatTitle').value = ""
     });
 
-    // Address book
+    /* Address book */
+    // Address book click listener
     addressBookA.addEventListener("click", function (event) {
         event.preventDefault();
         resetView();
@@ -149,8 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('addFriendA').classList.remove('is-hidden')
 
         addressBook.classList.remove('is-hidden')
+
+        updateAdressBook()
     });
 
+    // Add friends button listener
     addFriendA.addEventListener("click", function (event) {
         event.preventDefault();
         resetView();
@@ -159,4 +166,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addFriend.classList.remove('is-hidden')
     });
+
+    // Update address list on adressbook
+    function updateAdressBook(){
+        addressList.innerHTML = ""
+        loadJSON('account/contacts/').then(async function (response) {
+            response = JSON.parse(response)
+
+            for(let userId in response.contacts){
+                userId = response.contacts[userId]
+                await loadJSON('users/get/' + userId).then(function (response) {
+                    response = JSON.parse(response)
+                    
+                    addressList.innerHTML += `
+                <li>
+                    <div class="columns">
+                        <div class="column is-2">
+                            <figure class="image is-48x48">
+                                <img src="` + response.thumbnail + `" alt="avatar" class="is-rounded">
+                            </figure>
+                        </div>
+                        <div class="column">
+                            <div class="content">
+                                <div class="user-info">
+                                    <h3 class="is-size-6"> ` + response.username + `</h3>
+                                    <span class="has-text-grey-light is-size-7">
+                                        <a href="">
+                                            <i class="fas fa-user-minus"></i>
+                                        </a>
+                                    </span>
+                                </div>
+                                <p class="has-text-grey-light">Last access: ` + response.lastlogin + `</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>`;
+
+                });
+            }
+        });
+    }
 });

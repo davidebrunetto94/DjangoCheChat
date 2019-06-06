@@ -125,33 +125,38 @@ html, body {
 }
 
 #chatListColumn .title,
-#chatList ul {
+#chatList {
     margin-top: 50px;
 }
 
-#chatList li:hover{
+#chatList li:hover,
+#addressList li:hover{
     border-bottom: 2px solid hsl(217, 71%, 53%);
 }
 
-#chatList li {
+#chatList li,
+#addressList li {
     border-bottom: 2px solid transparent;
     padding: 25px 0;
     transition: border-bottom 1s;
 }
 
-#chatList .user-info {
+#chatList .user-info,
+#addressList .user-info {
     margin-bottom: 10px;
     display: flex;
     align-items: flex-start;
 }
 
-#chatList li h3 {
+#chatList li h3,
+#addressList li h3 {
     margin-right: auto;
     margin-bottom: 0;
     line-height: 1;
 }
 
-#chatList li a span {
+#chatList li a span,
+#addressList li a span {
     margin-left: 30px;
     white-space: nowrap;
 }

@@ -17,8 +17,8 @@ def user_listing(request):
 def get_user_info(request, user_id):
     """Get user info"""
 
-    user = User.objects.filter(id=user_id).values('username')
-    chatUser = ChatUser.objects.filter(user_id=user_id).values('profileImage')
+    user = User.objects.filter(id=user_id).values_list('username', 'last_login')
+    chatUser = ChatUser.objects.filter(user_id=user_id).values_list('profileImage', flat=True)
 
     if user.exists():
 
@@ -28,8 +28,9 @@ def get_user_info(request, user_id):
             thumbnail = ''
 
         response = {
-            'username': list(user)[0],
-            'thumbnail': thumbnail
+            'username': list(user)[0][0],
+            'thumbnail': thumbnail,
+            'lastlogin': list(user)[0][1].strftime('%d %b %Y')
         }
     else:
         response = {
@@ -146,7 +147,7 @@ def get_contacts(request):
 
     response = {
         'state': 'successful',
-        'contacts': list(phonebook.values('contacts'))
+        'contacts': list(phonebook.values_list('contacts', flat=True))
     }
 
     return JsonResponse(response)
@@ -180,12 +181,14 @@ def is_participants(chat_id, user_id):
 
     return False
 
+
 def change_chat_title(request, user_id, chat_id, new_chat_title):
     chat = Chat.objects.get(id=chat_id)
     chat_owner_id = chat.participants.values_list()[0][0]
     print(chat)
     if (chat_owner_id == request.user.id):
         #This means the user is the one who created the chat
+
         Chat.objects.get(id=chat_id).Title = new_chat_title
         print("if")
         response = {
