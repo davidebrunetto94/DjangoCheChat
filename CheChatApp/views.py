@@ -194,23 +194,25 @@ def is_participants(chat_id, user_id):
     return False
 
 
-def change_chat_title(request, user_id, chat_id, new_chat_title):
+def change_chat_title(request, chat_id, new_chat_title):
+    """
+    Change the title of a chat
+    Only the creator can
+    """
     chat = Chat.objects.get(id=chat_id)
     chat_owner_id = chat.participants.values_list()[0][0]
-    print(chat)
-    if (chat_owner_id == request.user.id):
-        #This means the user is the one who created the chat
 
-        Chat.objects.get(id=chat_id).Title = new_chat_title
-        print("if")
+    if chat_owner_id == request.user.id:
+        chat = Chat.objects.get(id=chat_id)
+        chat.title = new_chat_title
+        chat.save()
+
         response = {
             'state': 'successful',
         }
-
     else:
         response = {
-            'state': 'unsuccessful',
+            'state': 'not the owner',
         }
-        print("Not the owner")
 
     return JsonResponse(response)

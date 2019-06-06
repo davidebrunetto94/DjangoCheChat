@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
     var done = document.getElementById('done');
     var somethingBad = document.getElementById('somethingBad');
 
+    var chatTitle = document.getElementById('chatTitle')
+    var changeTitle = document.getElementById('changeTitle')
+
     // Reset all view
     function resetView() {
         realChatList.classList.add('is-hidden');
@@ -182,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await loadJSON('users/get/' + userId).then(function (response) {
                     response = JSON.parse(response)
 
-                    document.getElementById('checkAddFriends').innerHTML +=  `
+                    document.getElementById('checkAddFriends').innerHTML += `
                 <label class="checkbox">
                     <input type="checkbox" class="checkUser" value="` + userId + `"> ` + response.username + `
                 </label>`;
@@ -214,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             for (let userId in response.contacts) {
                 userId = response.contacts[userId]
-                
+
                 await loadJSON('users/get/' + userId).then(function (response) {
                     response = JSON.parse(response)
 
@@ -306,4 +309,28 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    /** Change title */
+    /* Title click listener */
+    chatTitle.addEventListener('click', function(event) {
+        event.preventDefault();
+        chatTitle.querySelector('span').classList.add('is-hidden');
+        chatTitle.querySelector('div').classList.remove('is-hidden');
+    });
+
+    /* Confirm button title listener */
+    changeTitle.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        chatId = chatTitle.dataset.id;
+        newTitle = chatTitle.querySelector('div input').value;
+
+        loadJSON('chat/change/title/' + chatId + '/' + newTitle).then(function (response) {
+            chatTitle.querySelector('span').classList.remove('is-hidden');
+            chatTitle.querySelector('div').classList.add('is-hidden');
+            chatTitle.querySelector('div input').value = "";    
+        });
+
+        event.stopPropagation()
+    });
 });

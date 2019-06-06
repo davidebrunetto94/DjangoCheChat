@@ -224,7 +224,17 @@
                             </figure>
                         </div>
                         <div class="column">
-                            <span class="title is-size-5">John Wayne</span>
+                            <span id="chatTitle" class="title is-size-5" data-id="10">
+                                <span>John Wayne</span>
+                                <div class="is-hidden">
+                                    <input class="input" type="text">
+                                    <a id="changeTitle" class="button">
+                                        <span class="icon is-small">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                            </span>
                             <br>
                             <span class="subtitle is-size-7">Last online: 2 days ago</span>
                         </div>
@@ -305,13 +315,14 @@
         </div>
 
         <div class="send">
-            <form>
-                <input type="text" placeholder="Type a message..." class="has-text-grey-light">
-
-                <span class="icon is-medium prepend">
-                    <i class="far fa-paper-plane"></i>
-                </span>
-            </form>
+            <div class="field">
+                <p class="control has-icons-right">
+                    <input class="input" type="text" placeholder="Type a message..." class="has-text-grey-light">
+                    <span class="icon is-small is-right">
+                        <i class="far fa-paper-plane"></i>
+                    </span>
+                </p>
+            </div>
         </div>
     </div>
 </div>
