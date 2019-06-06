@@ -66,9 +66,9 @@
 
 12) AddContactToPhonebook
 	US:
-	In qualità di membro di un gruppo voglio aggiungere uno dei componenti alla rubrica in modo da salvarne il contatto
+	In qualità di utente voglio aggiungere un'altro utente alla rubrica in modo da salvarne il contatto
 	AT:
-	Un utente qualunque che visualizza il profilo di un utente appartente ad un gruppo in comune deve poterlo salvare nella sua rubrica.
+	Un utente qualunque può aggiungere un altro utente nella propria rubrica
 
 13) ShowUserProfile
 	US:
