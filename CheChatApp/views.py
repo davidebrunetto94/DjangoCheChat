@@ -77,3 +77,23 @@ def get_participants(request, chat_id):
     }
 
     return JsonResponse(response)
+
+def change_chat_title(request, user_id, chat_id, new_chat_title):
+    chat = Chat.objects.get(id=chat_id)
+    chat_owner_id = chat.participants.values_list()[0][0]
+    print(chat)
+    if (chat_owner_id == request.user.id):
+        #This means the user is the one who created the chat
+        Chat.objects.get(id=chat_id).title = new_chat_title
+        print("if")
+        response = {
+            'state': 'successful',
+        }
+
+    else:
+        response = {
+            'state': 'unsuccessful',
+        }
+        print("Not the owner")
+
+    return JsonResponse(response)
