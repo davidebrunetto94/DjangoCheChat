@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
-from CheChatApp.models import Chat, PhoneBook
+from CheChatApp.models import Chat, PhoneBook,Message
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
@@ -41,17 +41,40 @@ def logout(request):
     return redirect('login')
 
 
+def chat_by_id(request, chat_id):
+    """Show selected chat"""
+
+    if request.user.is_authenticated:
+        chat = Chat.objects.filter(id=chat_id)
+        msg = Message.objects.filter(chat=chat[0])
+        list_text = []
+        for msgText in msg:
+            list_text.append(msgText.text)
+
+        response = {
+            'Title Chat': chat[0].title,
+            'text': list_text
+        }
+    else:
+        response = {
+            'state': 'no auth'
+        }
+
+    return JsonResponse(response)
+
+
 def new_chat(request, title=""):
     """Create a new"""
 
     # TODO: controllare se l'utente è amico
-
+    print("1")
     if request.user.is_authenticated:
+        print("2")
         chat = Chat.objects.create(title=title)
         chat.save()
 
         add_participant(request, request.user.id, chat.id)
-
+        print("3")
         response = {
             'state': 'successful',
             'id': chat.id
@@ -61,7 +84,7 @@ def new_chat(request, title=""):
             'state': 'no auth'
         }
 
-    return JsonResponse(response)
+    return render(request, 'chat.html')
 
 
 def add_participant(request, user_id, chat_id):
@@ -105,7 +128,6 @@ def get_participants(request, chat_id):
         }
 
     return JsonResponse(response)
-
 
 
 def get_contacts(request):
