@@ -98,7 +98,7 @@ def new_chat(request, title=""):
         response = {
             'state': 'no auth'
         }
-
+    print(response)
     return JsonResponse(response)
 
 
