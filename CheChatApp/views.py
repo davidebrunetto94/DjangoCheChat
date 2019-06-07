@@ -102,26 +102,22 @@ def chat_by_id(request, chat_id):
 
 
 def info_chat_by_id(request, chat_id):
-
     chat = Chat.objects.filter(id=chat_id)
-    i=0
-    for p in chat[0].participants.all():
-        i = i+1
-    if i > 2:
+
+    if len(chat[0].participants.all().values_list()) > 2:
         group = "true"
     else:
         group = "false"
 
     response = {
-        'Title Chat': chat[0].title,
-        'Id Char': chat_id,
+        'title': chat[0].title,
         'isGroup': group
     }
 
     return JsonResponse(response)
 
 
-def lista_chat_by_user(request, user_id):
+def list_chat_by_user(request, user_id):
     user = User.objects.filter(id = user_id)
     lista_chat = Chat.objects.all()
     toreturn = []
@@ -162,7 +158,7 @@ def new_chat(request, title=""):
             'state': 'no auth'
         }
 
-    return render(request, 'chat.html')
+    return JsonResponse(response)
 
 
 def add_participant(request, user_id, chat_id):
@@ -243,6 +239,7 @@ def add_contact(request, added_user_id):
 
     return JsonResponse(response)
 
+
 def delete_contact(request, user_to_delete_id):
     phonebook = PhoneBook.objects.get(owner=request.user)
 
@@ -253,6 +250,7 @@ def delete_contact(request, user_to_delete_id):
         phonebook.contacts.get(id=user_to_delete_id).delete()
 
     return JsonResponse(response)
+
 
 # TODO vedere se funziona
 def send_message(request, chat_id):
