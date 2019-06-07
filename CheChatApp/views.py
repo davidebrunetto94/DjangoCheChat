@@ -21,6 +21,7 @@ def get_user_info(request, user_id):
 
         if chat_user.exists():
             thumbnail = list(chat_user)[0]
+            print(thumbnail)
         else:
             thumbnail = ''
 

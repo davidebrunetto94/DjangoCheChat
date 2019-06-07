@@ -8,7 +8,7 @@ from CheChatApp.views import logout
 from django.shortcuts import render
 
 
-class LoginTestCase(TestCase):
+class ChangeTitleTestCase(TestCase):
 
     def test_change_chat_title(self):
         #variabile per il nuovo titolo
@@ -38,7 +38,7 @@ class LoginTestCase(TestCase):
     def test_change_chat_title_not_owner(self):
         #vecchio titolo
         oldTitle = 'vecchioTitolo'
-        
+
         #variabile per il nuovo titolo
         newTitle = 'nuovoTitolo'
         # creo user proprietario chat
