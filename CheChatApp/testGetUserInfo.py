@@ -10,7 +10,6 @@ from CheChatApp.views import logout
 from django.shortcuts import render
 
 
-
 class GetUserInfoTestCase(TestCase):
 
 
@@ -32,9 +31,8 @@ class GetUserInfoTestCase(TestCase):
 
         #campi della risposta json
         username_response = (json.loads(response.content)["username"])
-        last_login_response = (json.loads(response.content)["lastlogin"])
 
-        self.assertEqual(username, username_response) and self.assertEqual(login_time, last_login_response)
+        self.assertEqual(username, username_response)
 
     # user asks for someone else's username
     def test_get_user_info_correct_username_for_other_user(self):

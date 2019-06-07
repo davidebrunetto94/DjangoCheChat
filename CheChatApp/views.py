@@ -8,7 +8,18 @@ from django.http import JsonResponse
 
 def user_listing(request):
     """View with the list of users"""
-    return render(request, 'users/user_listing.html', {'users': User.objects.all()})
+    #return render(request, 'users/user_listing.html', {'users': User.objects.all()})
+    list_username = []
+    list_id = []
+    for user in User.objects.all():
+        list_username.append(user.username)
+        list_id.append(user.id)
+
+    response = {
+        'user': list_username,
+        'id': list_id
+    }
+    return JsonResponse(response)
 
 
 def get_user_info(request, user_id):
