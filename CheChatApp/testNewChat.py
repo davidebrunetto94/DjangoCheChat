@@ -1,16 +1,11 @@
-import requests
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
-from CheChatApp.views import login
-from CheChatApp.views import logout
-from django.shortcuts import render
-
 
 class NewChatTestCase(TestCase):
     def setUp(self):
-        User = get_user_model()
         user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
+        self.client = Client()
 
     def test_new_chat_wrong(self):
         #login with wrong credentials

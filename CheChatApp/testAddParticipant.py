@@ -11,6 +11,8 @@ import json
 
 
 class AddParticipantTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
 
     #User who created the chat tries to add himself twice. Expected result -> 'user exists'
     def test_add_participant_twice(self):

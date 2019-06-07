@@ -1,14 +1,12 @@
-import requests
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 import json
-from CheChatApp.views import login
 from CheChatApp.models import Chat
-from CheChatApp.views import logout
-from django.shortcuts import render
 
 
 class ChangeTitleTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
 
     def test_change_chat_title(self):
         #variabile per il nuovo titolo

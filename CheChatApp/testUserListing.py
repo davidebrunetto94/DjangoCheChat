@@ -11,6 +11,8 @@ from django.shortcuts import render
 
 
 class UserListingTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
 
     def test_user_listing(self):
         #creo vari user

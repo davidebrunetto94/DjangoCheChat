@@ -1,17 +1,12 @@
-import requests
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 import json
 import datetime
-from CheChatApp.views import login
-from CheChatApp.models import Chat
-from CheChatApp.models import ChatUser
-from CheChatApp.views import logout
-from django.shortcuts import render
 
 
 class GetUserInfoTestCase(TestCase):
-
+    def setUp(self):
+        self.client = Client()
 
     #user asks for his own username
     def test_get_user_info_correct_username(self):

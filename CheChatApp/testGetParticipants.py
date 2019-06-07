@@ -1,16 +1,12 @@
-import requests
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 import json
-import datetime
-from CheChatApp.views import login
 from CheChatApp.models import Chat
-from CheChatApp.models import ChatUser
-from CheChatApp.views import logout
-from django.shortcuts import render
 
 
 class GetParticipantsTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
 
     #a participant of the chat asks for the list of the participants
     def test_get_participants(self):
