@@ -101,7 +101,7 @@ def chat_by_id(request, chat_id):
     return JsonResponse(response)
 
 
-def info_chat_da_id(request, chat_id):
+def info_chat_by_id(request, chat_id):
 
     chat = Chat.objects.filter(id=chat_id)
     i=0
@@ -121,18 +121,37 @@ def info_chat_da_id(request, chat_id):
     return JsonResponse(response)
 
 
+def lista_chat_by_user(request, user_id):
+    user = User.objects.filter(id = user_id)
+    lista_chat = Chat.objects.all()
+    toreturn = []
+    for c in lista_chat:
+        for p in c.participants.all():
+            if p == user[0]:
+                aux = []
+                last_message = "no message"
+                msg = Message.objects.filter(chat=c)
+                for msgText in msg:
+                    last_message = msgText.text
+                aux.append(c.title)
+                aux.append(c.id)
+                aux.append(last_message)
+                toreturn.append(aux)
+    response = {
+        'Chat List': toreturn,
+    }
+    return JsonResponse(response)
+
+
 def new_chat(request, title=""):
     """Create a new"""
 
     # TODO: controllare se l'utente è amico
-    print("1")
     if request.user.is_authenticated:
-        print("2")
         chat = Chat.objects.create(title=title)
         chat.save()
 
         add_participant(request, request.user.id, chat.id)
-        print("3")
         response = {
             'state': 'successful',
             'id': chat.id,
