@@ -20,6 +20,6 @@ class PhoneBook(models.Model):
 
 class Message(models.Model):
     text = models.CharField('Text', max_length=5000)
-    timestamp = models.DateTimeField('Timestamp')
+    timestamp = models.DateTimeField('Timestamp', auto_now_add=True)
     sender = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)

@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
-from CheChatApp.models import Chat, PhoneBook, ChatUser
+from CheChatApp.models import Chat, PhoneBook, ChatUser, Message
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
@@ -90,18 +90,81 @@ def logout(request):
     auth_logout(request)
     return redirect('login')
 
+
+def chat_by_id(request, chat_id):
+    """Show selected chat"""
+
+    if request.user.is_authenticated:
+        chat = Chat.objects.filter(id=chat_id)
+        msg = Message.objects.filter(chat=chat[0])
+        list_text = []
+        for msgText in msg:
+            list_text.append(msgText.text)
+
+        response = {
+            'Title Chat': chat[0].title,
+            'text': list_text
+        }
+    else:
+        response = {
+            'state': 'no auth'
+        }
+
+    return JsonResponse(response)
+
+
+def info_chat_by_id(request, chat_id):
+
+    chat = Chat.objects.filter(id=chat_id)
+    i=0
+    for p in chat[0].participants.all():
+        i = i+1
+    if i > 2:
+        group = "true"
+    else:
+        group = "false"
+
+    response = {
+        'Title Chat': chat[0].title,
+        'Id Char': chat_id,
+        'isGroup': group
+    }
+
+    return JsonResponse(response)
+
+
+def lista_chat_by_user(request, user_id):
+    user = User.objects.filter(id = user_id)
+    lista_chat = Chat.objects.all()
+    toreturn = []
+    for c in lista_chat:
+        for p in c.participants.all():
+            if p == user[0]:
+                aux = []
+                last_message = "no message"
+                msg = Message.objects.filter(chat=c)
+                for msgText in msg:
+                    last_message = msgText.text
+                aux.append(c.title)
+                aux.append(c.id)
+                aux.append(last_message)
+                toreturn.append(aux)
+    response = {
+        'Chat List': toreturn,
+    }
+    return JsonResponse(response)
+
+
     #tested
 def new_chat(request, title=""):
     """Create a new"""
 
     # TODO: controllare se l'utente è amico
-
     if request.user.is_authenticated:
         chat = Chat.objects.create(title=title)
         chat.save()
 
         add_participant(request, request.user.id, chat.id)
-
         response = {
             'state': 'successful',
             'id': chat.id,
@@ -111,8 +174,8 @@ def new_chat(request, title=""):
         response = {
             'state': 'no auth'
         }
-    print(response)
-    return JsonResponse(response)
+
+    return render(request, 'chat.html')
 
     #tested
 def add_participant(request, user_id, chat_id):
@@ -194,6 +257,42 @@ def add_contact(request, added_user_id):
     return JsonResponse(response)
 
     #tested
+def delete_contact(request, user_to_delete_id):
+    phonebook = PhoneBook.objects.get(owner=request.user)
+
+    if not User.objects.filter(id=user_to_delete_id).exists() or not phonebook.contacts.filter(id=user_to_delete_id).exists():
+        response = {'state' : 'user does not exist'}
+    elif phonebook.contacts.filter(id=user_to_delete_id).exists():
+        response = {'state' : 'successful'}
+        phonebook.contacts.get(id=user_to_delete_id).delete()
+
+    return JsonResponse(response)
+
+# TODO vedere se funziona
+def send_message(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id)
+    if not chat.exists() or not Chat.objects.get(id=chat_id).participants.filter(id=request.id).exists():
+        response = {'state' : 'chat does not exist'}
+    else:
+        Message(text=request.POST.get('message_body'), sender=request.user.id, chat=chat_id).save()
+        response = {'state' : 'successful'}
+    return JsonResponse(response)
+
+
+# semmai dovesse servire, altrimenti cancellare
+"""def get_chat_messages(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id)
+    if not chat.exists() or not Chat.objects.get(id=chat_id).participants.filter(id=request.user.id).exists():
+        response = {'state' : 'chat does not exist'}
+    else:
+        messages = Message.objects.filter(chat=chat_id).order_by('-timestamp')
+        response = {
+            'state' : 'successful',
+            'messages' : list(messages.values_list('sender', 'text', 'timestamp'))
+        }
+    return JsonResponse(response)"""
+
+
 def is_participants(chat_id, user_id):
     """Check if the user is a participant of the chat"""
 
