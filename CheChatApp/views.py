@@ -6,6 +6,7 @@ from CheChatApp.models import Chat, PhoneBook, ChatUser
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
+    #tested
 def user_listing(request):
     """View with the list of users"""
     #return render(request, 'users/user_listing.html', {'users': User.objects.all()})
@@ -21,7 +22,7 @@ def user_listing(request):
     }
     return JsonResponse(response)
 
-
+    #tested
 def get_user_info(request, user_id):
     """Get user info"""
 
@@ -48,7 +49,7 @@ def get_user_info(request, user_id):
 
     return JsonResponse(response)
 
-
+    #tested
 def get_id_from_username(request, username):
     """Get id by username"""
     user = User.objects.filter(username=username).values_list('id', flat=True)
@@ -60,7 +61,7 @@ def get_id_from_username(request, username):
 
     return JsonResponse(response)
 
-
+    #tested
 def login(request):
     """Login view"""
     if request.method == 'GET':
@@ -89,7 +90,7 @@ def logout(request):
     auth_logout(request)
     return redirect('login')
 
-
+    #tested
 def new_chat(request, title=""):
     """Create a new"""
 
@@ -113,7 +114,7 @@ def new_chat(request, title=""):
     print(response)
     return JsonResponse(response)
 
-
+    #tested
 def add_participant(request, user_id, chat_id):
     """
         Add a participant to a chat
@@ -144,7 +145,7 @@ def add_participant(request, user_id, chat_id):
 
     return JsonResponse(response)
 
-
+    #tested
 def get_participants(request, chat_id):
     """Get participants of a chat"""
 
@@ -192,7 +193,7 @@ def add_contact(request, added_user_id):
 
     return JsonResponse(response)
 
-
+    #tested
 def is_participants(chat_id, user_id):
     """Check if the user is a participant of the chat"""
 
@@ -204,7 +205,7 @@ def is_participants(chat_id, user_id):
 
     return False
 
-
+    #tested
 def change_chat_title(request, chat_id, new_chat_title):
     """
     Change the title of a chat

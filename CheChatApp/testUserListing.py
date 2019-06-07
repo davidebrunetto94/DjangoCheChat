@@ -10,7 +10,7 @@ from CheChatApp.views import logout
 from django.shortcuts import render
 
 
-class GetIdFromUsernameTestCase(TestCase):
+class UserListingTestCase(TestCase):
 
     def test_user_listing(self):
         #creo vari user
