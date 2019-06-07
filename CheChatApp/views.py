@@ -101,6 +101,26 @@ def chat_by_id(request, chat_id):
     return JsonResponse(response)
 
 
+def info_chat_da_id(request, chat_id):
+
+    chat = Chat.objects.filter(id=chat_id)
+    i=0
+    for p in chat[0].participants.all():
+        i = i+1
+    if i > 2:
+        group = "true"
+    else:
+        group = "false"
+
+    response = {
+        'Title Chat': chat[0].title,
+        'Id Char': chat_id,
+        'isGroup': group
+    }
+
+    return JsonResponse(response)
+
+
 def new_chat(request, title=""):
     """Create a new"""
 
