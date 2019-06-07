@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
-from CheChatApp.models import Chat, PhoneBook,Message
+from CheChatApp.models import Chat, PhoneBook, ChatUser, Message
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
@@ -10,6 +10,44 @@ from django.http import JsonResponse
 def user_listing(request):
     """View with the list of users"""
     return render(request, 'users/user_listing.html', {'users': User.objects.all()})
+
+
+def get_user_info(request, user_id):
+    """Get user info"""
+
+    user = User.objects.filter(id=user_id).values_list('username', 'last_login')
+    chat_user = ChatUser.objects.filter(user_id=user_id).values_list('profileImage', flat=True)
+
+    if user.exists():
+
+        if chat_user.exists():
+            thumbnail = list(chat_user)[0]
+        else:
+            thumbnail = ''
+
+        response = {
+            'username': list(user)[0][0],
+            'thumbnail': thumbnail,
+            'lastlogin': list(user)[0][1].strftime('%d %b %Y')
+        }
+    else:
+        response = {
+            'state': 'user not found'
+        }
+
+    return JsonResponse(response)
+
+
+def get_id_from_username(request, username):
+    """Get id by username"""
+    user = User.objects.filter(username=username).values_list('id', flat=True)
+
+    if user.exists():
+        response = {'state': 'successful', 'id': list(user)[0]}
+    else:
+        response = {'state': 'username not found'}
+
+    return JsonResponse(response)
 
 
 def login(request):
@@ -77,7 +115,8 @@ def new_chat(request, title=""):
         print("3")
         response = {
             'state': 'successful',
-            'id': chat.id
+            'id': chat.id,
+            'owner_id': chat.participants.values_list()[0][0]
         }
     else:
         response = {
@@ -88,9 +127,16 @@ def new_chat(request, title=""):
 
 
 def add_participant(request, user_id, chat_id):
-    """Add a participant to a chat"""
+    """
+        Add a participant to a chat
+        Only participants of a chat can add other
+        An user can add himself, only if the chat doesn't have any participants (so it's the creator)
+    """
 
-    if is_participants(chat_id, request.user.id) or request.user.id == user_id:
+    # TODO: controllare gli il participiant sia amico dell'utente che aggiunge
+
+    if is_participants(chat_id, request.user.id) or \
+            (request.user.id == int(user_id) and len(Chat.objects.get(id=chat_id).participants.values_list()) == 0):
 
         chat = Chat.objects.filter(id=chat_id)
 
@@ -100,7 +146,6 @@ def add_participant(request, user_id, chat_id):
             }
         else:
             chat[0].participants.add(user_id)
-
             response = {
                 'state': 'successful'
             }
@@ -134,27 +179,65 @@ def get_contacts(request):
     phonebook = PhoneBook.objects.filter(owner=request.user)
 
     response = {
-        'state' : 'successful',
-        'contacts' : list(phonebook.values('contacts'))
+        'state': 'successful',
+        'contacts': list(phonebook.values_list('contacts', flat=True))
     }
 
     return JsonResponse(response)
 
 
-def add_phonebook_contact(request, added_user_id):
+def add_contact(request, added_user_id):
     if not PhoneBook.objects.filter(owner=request.user).exists():
         PhoneBook(owner=request.user).save()
+
     phonebook = PhoneBook.objects.get(owner=request.user)
 
-    error = phonebook.contacts.filter(id=added_user_id).exists() or not User.objects.filter(id=added_user_id).exists()
-
-    if error:
-        response = { 'state' : 'fail' }
+    if not User.objects.filter(id=added_user_id).exists():
+        response = {'state': 'user not found'}
+    elif phonebook.contacts.filter(id=added_user_id).exists():
+        response = {'state': 'already friend'}
+    elif request.user.id == int(added_user_id):
+        response = {'state': 'you cannot add yourself'}
     else:
         phonebook.contacts.add(User.objects.get(id=added_user_id))
-        response = { 'state' : 'successful' }
+        response = {'state': 'successful'}
 
     return JsonResponse(response)
+
+def delete_contact(request, user_to_delete_id):
+    phonebook = PhoneBook.objects.get(owner=request.user)
+
+    if not User.objects.filter(id=user_to_delete_id).exists() or not phonebook.contacts.filter(id=user_to_delete_id).exists():
+        response = {'state' : 'user does not exist'}
+    elif phonebook.contacts.filter(id=user_to_delete_id).exists():
+        response = {'state' : 'successful'}
+        phonebook.contacts.get(id=user_to_delete_id).delete()
+
+    return JsonResponse(response)
+
+# TODO vedere se funziona
+def send_message(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id)
+    if not chat.exists() or not Chat.objects.get(id=chat_id).participants.filter(id=request.id).exists():
+        response = {'state' : 'chat does not exist'}
+    else:
+        Message(text=request.POST.get('message_body'), sender=request.user.id, chat=chat_id).save()
+        response = {'state' : 'successful'}
+    return JsonResponse(response)
+
+
+# semmai dovesse servire, altrimenti cancellare
+"""def get_chat_messages(request, chat_id):
+    chat = Chat.objects.filter(id=chat_id)
+    if not chat.exists() or not Chat.objects.get(id=chat_id).participants.filter(id=request.user.id).exists():
+        response = {'state' : 'chat does not exist'}
+    else:
+        messages = Message.objects.filter(chat=chat_id).order_by('-timestamp')
+        response = {
+            'state' : 'successful',
+            'messages' : list(messages.values_list('sender', 'text', 'timestamp'))
+        }
+    return JsonResponse(response)"""
 
 
 def is_participants(chat_id, user_id):
@@ -167,3 +250,27 @@ def is_participants(chat_id, user_id):
             return True
 
     return False
+
+
+def change_chat_title(request, chat_id, new_chat_title):
+    """
+    Change the title of a chat
+    Only the creator can
+    """
+    chat = Chat.objects.get(id=chat_id)
+    chat_owner_id = chat.participants.values_list()[0][0]
+
+    if chat_owner_id == request.user.id:
+        chat = Chat.objects.get(id=chat_id)
+        chat.title = new_chat_title
+        chat.save()
+
+        response = {
+            'state': 'successful',
+        }
+    else:
+        response = {
+            'state': 'not the owner',
+        }
+
+    return JsonResponse(response)

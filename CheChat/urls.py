@@ -20,13 +20,18 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/logout/', views.logout, name='logout'),
-    path('account/phonebook/', views.get_contacts, name='user_id'),
-    path('account/phonebook/add/<added_user_id>', views.add_phonebook_contact),
+    path('account/contacts/', views.get_contacts),
+    path('account/contacts/add/<added_user_id>', views.add_contact),
+    path('account/contacts/delete/<user_to_delete_id>', views.delete_contact),
     path(r'users/', views.user_listing),
+    path('users/get/<user_id>', views.get_user_info),
+    path('users/get/id/<username>', views.get_id_from_username),
     path('', views.login, name='login'),
     path('chat/<chat_id>', views.chat_by_id),
     path('chat/new', views.new_chat, name='user_id'),
     path('chat/new/<title>', views.new_chat),
     path('chat/add/participant/<user_id>/<chat_id>', views.add_participant, name='info'),
-    path('chat/get/participants/<chat_id>', views.get_participants)
+    path('chat/get/messages/<chat_id>', views.get_chat_messages),
+    path('chat/get/participants/<chat_id>', views.get_participants),
+    path('chat/change/title/<chat_id>/<new_chat_title>', views.change_chat_title)
 ]
