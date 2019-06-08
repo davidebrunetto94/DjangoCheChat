@@ -6,10 +6,9 @@ from CheChatApp.models import Chat, PhoneBook, ChatUser, Message
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
-    #tested
+
 def user_listing(request):
     """View with the list of users"""
-    #return render(request, 'users/user_listing.html', {'users': User.objects.all()})
     list_username = []
     list_id = []
     for user in User.objects.all():
@@ -22,7 +21,7 @@ def user_listing(request):
     }
     return JsonResponse(response)
 
-    #tested
+
 def get_user_info(request, user_id):
     """Get user info"""
 
@@ -49,7 +48,7 @@ def get_user_info(request, user_id):
 
     return JsonResponse(response)
 
-    #tested
+
 def get_id_from_username(request, username):
     """Get id by username"""
     user = User.objects.filter(username=username).values_list('id', flat=True)
@@ -61,7 +60,16 @@ def get_id_from_username(request, username):
 
     return JsonResponse(response)
 
-    #tested
+
+def get_current_user_id(request):
+    response = {
+        'state': 'successful',
+        'id': request.user.id
+    }
+
+    return JsonResponse(response)
+
+
 def login(request):
     """Login view"""
     if request.method == 'GET':
@@ -101,7 +109,8 @@ def info_chat_by_id(request, chat_id):
 
     response = {
         'title': chat[0].title,
-        'isGroup': group
+        'isGroup': group,
+        'created': chat[0].created
     }
 
     return JsonResponse(response)
@@ -129,10 +138,18 @@ def get_last_message(request, chat_id):
     chat = Chat.objects.filter(id=chat_id)
 
     if chat.exists() and is_participants(chat_id, request.user.id):
-        response = {
-            'state': 'successful',
-            'message': list(Message.objects.filter(chat=chat_id).order_by('-timestamp').values("text", "timestamp"))[0]
-        }
+        message = list(Message.objects.filter(chat=chat_id).order_by('-timestamp').values("text", "timestamp"))
+
+        if len(message) > 0:
+            response = {
+                'state': 'successful',
+                'message': message[0]
+            }
+        else:
+            response = {
+                'state': 'successful',
+                'message': []
+            }
 
     else:
         response = {
@@ -163,7 +180,7 @@ def new_chat(request, title=""):
 
     return JsonResponse(response)
 
-    #tested
+
 def add_participant(request, user_id, chat_id):
     """
         Add a participant to a chat
@@ -194,7 +211,7 @@ def add_participant(request, user_id, chat_id):
 
     return JsonResponse(response)
 
-    #tested
+
 def get_participants(request, chat_id):
     """Get participants of a chat"""
 
@@ -223,7 +240,7 @@ def get_contacts(request):
 
     return JsonResponse(response)
 
-    #tested
+
 def add_contact(request, added_user_id):
     if not PhoneBook.objects.filter(owner=request.user).exists():
         PhoneBook(owner=request.user).save()
@@ -294,7 +311,7 @@ def is_participants(chat_id, user_id):
 
     return False
 
-    #tested
+
 def change_chat_title(request, chat_id, new_chat_title):
     """
     Change the title of a chat

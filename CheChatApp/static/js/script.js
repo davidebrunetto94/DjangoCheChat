@@ -38,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     var chatTitle = document.getElementById('chatTitle')
     var changeTitle = document.getElementById('changeTitle')
 
+    var chatList = document.getElementById('chatList')
+
     // Reset all view
     function resetView() {
         realChatList.classList.add('is-hidden');
@@ -86,9 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadJSON('account/contacts/').then(async function (response) {
             response = JSON.parse(response);
 
-            for (let userId in response.contacts) {
-                userId = response.contacts[userId]
-
+            for (let userId of response.contacts) {
                 await loadJSON('users/get/' + userId).then(function (response) {
                     response = JSON.parse(response)
 
@@ -120,15 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 bad(response.state);
             }
         });
-    });
-
-    /* Chats */
-    // View chats
-    chatA.addEventListener("click", function (event) {
-        event.preventDefault()
-        resetView()
-        chatListColumnTitle.innerHTML = "Your chats"
-        realChatList.classList.remove('is-hidden');
     });
 
     /* Chat group */
@@ -179,9 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadJSON('account/contacts/').then(async function (response) {
             response = JSON.parse(response);
 
-            for (let userId in response.contacts) {
-                userId = response.contacts[userId]
-
+            for (let userId of response.contacts) {
                 await loadJSON('users/get/' + userId).then(function (response) {
                     response = JSON.parse(response)
 
@@ -215,9 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadJSON('account/contacts/').then(async function (response) {
             response = JSON.parse(response)
 
-            for (let userId in response.contacts) {
-                userId = response.contacts[userId]
-
+            for (let userId of response.contacts) {
                 await loadJSON('users/get/' + userId).then(function (response) {
                     response = JSON.parse(response)
 
@@ -299,11 +286,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 userId = element.dataset.id;
 
-                loadJSON('account/contacts/remove/' + userId).then(function (response) {
+                loadJSON('account/contacts/delete/' + userId).then(function (response) {
+                    response = JSON.parse(response)
+
                     if (response.state == 'successful') {
-                        success(response.state)
+                        success(response.state);
+                        updateAdressBook();
                     } else {
-                        bad(response.state)
+                        bad(response.state);
                     }
                 });
             });
@@ -312,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /** Change title */
     /* Title click listener */
-    chatTitle.addEventListener('click', function(event) {
+    chatTitle.addEventListener('click', function (event) {
         event.preventDefault();
         chatTitle.querySelector('span').classList.add('is-hidden');
         chatTitle.querySelector('div').classList.remove('is-hidden');
@@ -328,9 +318,112 @@ document.addEventListener('DOMContentLoaded', () => {
         loadJSON('chat/change/title/' + chatId + '/' + newTitle).then(function (response) {
             chatTitle.querySelector('span').classList.remove('is-hidden');
             chatTitle.querySelector('div').classList.add('is-hidden');
-            chatTitle.querySelector('div input').value = "";    
+            chatTitle.querySelector('div input').value = "";
         });
 
         event.stopPropagation()
     });
+
+    /* Chats */
+    // View chats
+    chatA.addEventListener("click", function (event) {
+        event.preventDefault()
+        resetView()
+        chatListColumnTitle.innerHTML = "Your chats"
+        realChatList.classList.remove('is-hidden');
+        updateChatList();
+    });
+
+    /* Chat list */
+    async function updateChatList() {
+        chatList.innerHTML = "";
+
+        //Get user chat
+        await loadJSON('user/chat/').then(async function (response) {
+            response = JSON.parse(response)
+
+            // Get info about all chat
+            for (let id of response.chat) {
+                await loadJSON('chat/info/' + id.id).then(function (response) {
+                    response = JSON.parse(response)
+                    var title = response.title;
+                    var isGroup = response.isGroup;
+                    var chatCreated = new Date(response.created);
+
+                    // Get last message
+                    loadJSON('chat/get/last/' + id.id).then(async function (response) {
+                        response = JSON.parse(response)
+
+                        var lastMessage = response.message;
+                        var timestamp = new Date(response.message.timestamp);
+
+                        if (isNaN(timestamp)) {
+                            timestamp = chatCreated;
+                        }
+
+                        if (lastMessage.length == 0) {
+                            lastMessage = "No messages";
+                        } else {
+                            lastMessage = lastMessage.text;
+                        }
+
+                        if (isGroup != "true") {
+                            // The username of the other user should be shown if it's not a group chat
+                            await loadJSON('user/get/current').then(async function (response) {
+                                userId = JSON.parse(response).id;
+
+                                await loadJSON('chat/get/participants/' + id.id).then(async function (response) {
+                                    for (let user of JSON.parse(response).participants) {
+                                        if (userId != user.id) {
+                                            title = user.username;
+                                        }
+                                    }
+                                });
+                            });
+                        }
+
+                        chatList.innerHTML += `
+                    <li>
+                        <a href="" class="chatListA" data-id="` + id.id + `">
+                            <div class="columns">
+                                <div class="column is-2">
+                                    <figure class="imageis-square">
+                                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                                    </figure>
+                                </div>
+                                <div class="column">
+                                    <div class="content">
+                                        <div class="user-info">
+                                            <h3 class="is-size-6">` + title + `</h3>
+                                            <span class="has-text-grey-light is-size-7">` + timestamp.toLocaleDateString("default", { day: '2-digit', month: "short" }) + `</span>
+                                        </div>
+                                        <p class="has-text-grey-light">` + lastMessage + `</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                        `;
+                        openChatListener()
+                    });
+                });
+            }
+        });
+    }
+    updateChatList();
+
+    // Create open chat listener
+    function openChatListener() {
+        var classes = document.querySelectorAll('.chatListA');
+
+        Array.from(classes).forEach(function (element) {
+            element.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                chatId = element.dataset.id;
+
+                alert(chatId)
+            });
+        });
+    }
 });
