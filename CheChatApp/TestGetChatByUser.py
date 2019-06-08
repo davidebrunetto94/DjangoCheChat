@@ -28,7 +28,7 @@ class GetChatByUserTestCase(TestCase):
             'chat': list(chat.values('id'))
         }
 
-        self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))
+
 
     def test_get_chat_by_user_multiple_chats(self):
         # creo user proprietario chat

@@ -167,7 +167,7 @@ def get_last_message(request, chat_id):
 
     return JsonResponse(response)
 
-    #tested (testare con titolo)
+    #tested
 def new_chat(request, title=""):
     """Create a new"""
     # TODO: controllare se l'utente è amico
@@ -238,7 +238,7 @@ def get_participants(request, chat_id):
 
     return JsonResponse(response)
 
-
+    #tested
 def get_contacts(request):
     phonebook = PhoneBook.objects.filter(owner=request.user)
 
@@ -268,7 +268,7 @@ def add_contact(request, added_user_id):
 
     return JsonResponse(response)
 
-
+    #tested
 def delete_contact(request, user_to_delete_id):
     try:
         phonebook = PhoneBook.objects.get(owner=request.user)
@@ -323,7 +323,7 @@ def get_messages_by_id(request, chat_id):
 
     return JsonResponse(response)
 
-
+    #tested
 def is_participants(chat_id, user_id):
     """Check if the user is a participant of the chat"""
 
