@@ -1,16 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Json load
-    function loadJSON(path) {
+    function loadJSON(path, method = 'GET', params = null) {
         return new Promise(function (resolve, reject) {
             var xobj = new XMLHttpRequest();
-            xobj.overrideMimeType("application/json");
-            xobj.open('GET', path, true);
+            xobj.open(method, path, true);
+
+            if (method == 'POST') {
+                xobj.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            } else {
+                xobj.overrideMimeType("application/json");
+            }
+
             xobj.onreadystatechange = function () {
                 if (xobj.readyState == 4 && xobj.status == "200") {
                     resolve(xobj.responseText);
                 }
             };
-            xobj.send(null);
+            xobj.send(params);
         });
     }
 
@@ -39,6 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     var changeTitle = document.getElementById('changeTitle')
 
     var chatList = document.getElementById('chatList')
+    var chatMessages = document.getElementById('chatMessages')
+
+    var newMessageInput = document.getElementById('newMessageInput')
+    var newMessageSend = document.getElementById('newMessageSend')
 
     // Reset all view
     function resetView() {
@@ -422,8 +432,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 chatId = element.dataset.id;
 
-                alert(chatId)
+                updateChatMessages(chatId);
             });
         });
     }
+
+    //Update chat messages
+    function updateChatMessages(chatId) {
+        chatMessages.innerHTML = "";
+
+        loadJSON('chat/messages/' + chatId).then(async function (response) {
+            response = JSON.parse(response)
+            messages = response.messages;
+
+            await loadJSON('user/get/current').then(async function (response) {
+                var userId = JSON.parse(response).id;
+
+                for (let chat of messages) {
+                    isUser = ((userId == chat.sender) ? 'class="my-message"' : '');
+                    chatMessages.innerHTML += `
+            <li ` + isUser + `>
+                <figure class="image is-32x32">
+                    <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                </figure>
+                <div class="content">
+                    <div class="message">
+                        <div class="bubble">
+                            <p>` + chat.text + `</p>
+                        </div>
+                    </div>
+                    <span class="has-text-grey-light">` + (new Date(chat.timestamp)).toLocaleTimeString("default", { hour: "2-digit", minute: "2-digit" }) + `</span>
+                </div>
+            </li>`;
+                }
+
+                // Scroll to the last message
+                document.querySelector('.messages').scrollTop = document.querySelector('.messages').scrollHeight;
+            });
+        });
+
+        newMessageInput.setAttribute('data-id', chatId);
+    }
+
+    // Send message input
+    newMessageInput.addEventListener("keypress", function (e) {
+        var key = e.which || e.keyCode || 0;
+
+        // On enter press
+        if (key === 13) {
+            var chatId = newMessageInput.dataset.id;
+
+            console.log(chatId)
+
+            loadJSON('chat/add/message/', 'POST', 'id=' + chatId + '&message_body=' + encodeURI(newMessageInput.value)).then(async function (response) {
+                updateChatMessages(chatId);
+                updateChatList();
+                newMessageInput.value = ''
+            });
+        }
+    });
 });

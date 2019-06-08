@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
+
 from CheChatApp.models import Chat, PhoneBook, ChatUser, Message
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -274,11 +276,16 @@ def delete_contact(request, user_to_delete_id):
     return JsonResponse(response)
 
 
-# TODO vedere se funziona
-def send_message(request, chat_id):
+@csrf_exempt
+def send_message(request):
+    chat_id = request.POST.get('id')
+
     chat = Chat.objects.filter(id=chat_id)
+
     if chat.exists() and is_participants(chat_id, request.user.id):
-        Message(text=request.POST.get('message_body'), sender=request.user.id, chat=chat_id).save()
+        Message(text=request.POST.get('message_body'),
+                sender=list(User.objects.filter(id=request.user.id))[0],
+                chat=list(Chat.objects.filter(id=chat_id))[0]).save()
         response = {'state': 'successful'}
     else:
         response = {'state': 'chat does not exist'}
@@ -289,7 +296,7 @@ def send_message(request, chat_id):
 def get_messages_by_id(request, chat_id):
     chat = Chat.objects.filter(id=chat_id)
     if chat.exists() and is_participants(chat_id, request.user.id):
-        messages = Message.objects.filter(chat=chat_id).order_by('-timestamp')
+        messages = Message.objects.filter(chat=chat_id).order_by('timestamp')
         response = {
             'state': 'successful',
             'messages': list(messages.values('sender', 'text', 'timestamp'))

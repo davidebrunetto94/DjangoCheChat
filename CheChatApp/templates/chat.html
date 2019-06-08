@@ -204,7 +204,7 @@
                             </figure>
                         </div>
                         <div class="column">
-                            <span id="chatTitle" class="title is-size-5" data-id="10">
+                            <span id="chatTitle" class="title is-size-5">
                                 <span>John Wayne</span>
                                 <div class="is-hidden">
                                     <input class="input" type="text">
@@ -250,46 +250,7 @@
 
         <div class="messages">
             <div class="container">
-                <ul>
-                    <li>
-                        <figure class="image is-32x32">
-                            <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
-                        </figure>
-                        <div class="content">
-                            <div class="message">
-                                <div class="bubble">
-                                    <p>Ciao bello, come va? Offerta per i libri?</p>
-                                </div>
-                            </div>
-                            <span class="has-text-grey-light">13:10</span>
-                        </div>
-                    </li>
-                    <li class="my-message">
-                        <figure class="image is-32x32">
-                            <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
-                        </figure>
-                        <div class="content">
-                            <div class="message">
-                                <div class="bubble">
-                                    <p>Ciao bello, come va? Offerta per i libri?</p>
-                                </div>
-                            </div>
-                            <span class="has-text-grey-light">13:10</span>
-                        </div>
-                    </li>
-                    <li class="my-message">
-                        <figure class="image is-32x32">
-                            <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
-                        </figure>
-                        <div class="content">
-                            <div class="message">
-                                <div class="bubble">
-                                    <p>Ciao bello, come va? Offerta per i libri?</p>
-                                </div>
-                            </div>
-                            <span class="has-text-grey-light">13:10</span>
-                        </div>
-                    </li>
+                <ul id="chatMessages">
                 </ul>
             </div>
         </div>
@@ -297,8 +258,8 @@
         <div class="send">
             <div class="field">
                 <p class="control has-icons-right">
-                    <input class="input" type="text" placeholder="Type a message..." class="has-text-grey-light">
-                    <span class="icon is-small is-right">
+                    <input id="newMessageInput" class="input" type="text" placeholder="Type a message..." class="has-text-grey-light">
+                    <span id="newMessageSend" class="icon is-small is-right">
                         <i class="far fa-paper-plane"></i>
                     </span>
                 </p>
