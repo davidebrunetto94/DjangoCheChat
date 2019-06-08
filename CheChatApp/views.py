@@ -130,6 +130,10 @@ def get_chat_by_user(request):
             'state': 'successful',
             'chat': list(chat.values("id"))
         }
+    else:
+        response = {
+            'state': 'chat doesn\'t exists'
+        }
 
     return JsonResponse(response)
 
@@ -318,32 +322,28 @@ def is_participants(chat_id, user_id):
 
     chat = Chat.objects.get(id=chat_id)
     return chat.participants.filter(id=user_id).exists()
-    #for participant in chat.participants.values_list():
-    #    if participant[0] == user_id:
-    #        return True
-
-    #return False
 
 
 def exit_group(request, chat_id):
     if is_participants(chat_id, request.user.id):
         chat = Chat.objects.get(id=chat_id)
-        chat.participants.get(id=request.user.id).delete()
-        response = {'state' : 'successful'}
+        chat.participants.remove(request.user.id)
+        response = {'state': 'successful'}
     else:
-        response = {'state' : 'fail'}
+        response = {'state': 'fail'}
 
     return JsonResponse(response)
 
 
 def change_email(request):
     if 'new_email_address' not in request.POST:
-        response = {'state' : 'fail'}
+        response = {'state': 'fail'}
     else:
         request.user.email = request.POST.get('new_email_address')
         request.user.save()
-        response = {'state' : 'successful'}
+        response = {'state': 'successful'}
     return JsonResponse(response)
+
 
 def change_img_url(request):
     if 'new_img_url' not in request.POST:
@@ -351,8 +351,9 @@ def change_img_url(request):
     else:
         request.user.chatuser.profileImage = request.POST.get('new_img_url')
         request.user.chatuser.save()
-        response = {'state' : 'successful'}
+        response = {'state': 'successful'}
     return JsonResponse(response)
+
 
 def change_chat_title(request, chat_id, new_chat_title):
     """

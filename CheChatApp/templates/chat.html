@@ -104,28 +104,6 @@
         </div>
 
         <div id="realChatList">
-            <!--<div class="tabs is-toggle is-centered">
-                <ul>
-                    <li class="is-active">
-                        <a>
-                            <span class="icon is-small">
-                                <i class="fas fa-user"></i>
-                            </span>
-                            <span>Personal</span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a>
-                            <span class="icon is-small">
-                                <i class="fas fa-users"></i>
-                            </span>
-                            <span>Group</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>-->
-
             <ul id="chatList">
             </ul>
         </div>
@@ -193,7 +171,7 @@
 
     </div>
     <div id="chatSingle" class="column is-9 has-background-white">
-        <nav class="level">
+        <nav class="level is-hidden">
             <!-- Left side -->
             <div class="level-left">
                 <div class="level-item">
@@ -236,7 +214,7 @@
                     </a>
                 </div>
                 <div class="menu-label delete-chat">
-                    <a href="" title="Delete chat" class="has-text-grey">
+                    <a id="deleteChatA" href="" title="Delete chat" class="has-text-grey">
                         <span class="icon is-large">
                             <span class="fa-stack fa-2x">
                                 <i class="fas fa-circle fa-stack-2x has-text-light"></i>
@@ -248,14 +226,17 @@
             </div>
         </nav>
 
-        <div class="messages">
+        <div id="noChats" class="has-text-centered">
+            <span class="title">Open a chat!</span>
+        </div>
+        <div class="messages is-hidden">
             <div class="container">
                 <ul id="chatMessages">
                 </ul>
             </div>
         </div>
 
-        <div class="send">
+        <div class="send is-hidden">
             <div class="field">
                 <p class="control has-icons-right">
                     <input id="newMessageInput" class="input" type="text" placeholder="Type a message..." class="has-text-grey-light">

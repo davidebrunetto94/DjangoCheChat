@@ -46,9 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var chatList = document.getElementById('chatList')
     var chatMessages = document.getElementById('chatMessages')
+    var deleteChatA = document.getElementById('deleteChatA')
 
     var newMessageInput = document.getElementById('newMessageInput')
-    var newMessageSend = document.getElementById('newMessageSend')
 
     // Reset all view
     function resetView() {
@@ -345,12 +345,32 @@ document.addEventListener('DOMContentLoaded', () => {
         updateChatList();
     });
 
+    // Remove user from participiants
+    deleteChatA.addEventListener('click', function (event){
+        event.preventDefault();
+
+        loadJSON('chat/delete/participant/' + chatTitle.dataset.id).then(async function (response) {
+            response = JSON.parse(response)
+            document.querySelector('#noChats .title').innerHTML = "You're out!"
+            document.getElementById('noChats').classList.remove('is-hidden');
+            document.querySelector('.send').classList.add('is-hidden');
+            document.querySelector('.messages').classList.add('is-hidden');
+            document.querySelector('.level').classList.add('is-hidden');
+
+            updateChatList();
+        });
+    });
+
     /* Chat list */
     async function updateChatList() {
         //Get user chat
         await loadJSON('user/chat/').then(async function (response) {
             response = JSON.parse(response)
             chatList.innerHTML = "";
+
+            if(response.chat == undefined){
+                return;
+            }
 
             // Get info about all chat
             for (let id of response.chat) {
@@ -365,6 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         var lastMessage = response.message;
                         var timestamp = new Date(response.message.timestamp);
+                        var thumbnail = ""
 
                         if (isNaN(timestamp)) {
                             timestamp = new Date();
@@ -384,7 +405,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 await loadJSON('chat/get/participants/' + id.id).then(async function (response) {
                                     for (let user of JSON.parse(response).participants) {
                                         if (userId != user.id) {
-                                            title = user.username;
+                                            await loadJSON('users/get/' + user.id).then(async function (response) {
+                                                title = user.username;
+                                                thumbnail = JSON.parse(response).thumbnail;
+                                            });
                                         }
                                     }
                                 });
@@ -397,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="columns">
                                 <div class="column is-2">
                                     <figure class="imageis-square">
-                                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                                        <img src="` + thumbnail + `" alt="avatar" class="is-rounded">
                                     </figure>
                                 </div>
                                 <div class="column">
@@ -433,6 +457,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 updateChatMessages(chatId);
                 updateTitle(chatId);
+
+                document.getElementById('noChats').classList.add('is-hidden');
+                document.querySelector('.send').classList.remove('is-hidden');
+                document.querySelector('.messages').classList.remove('is-hidden');
+                document.querySelector('.level').classList.remove('is-hidden');
             });
         });
     }
