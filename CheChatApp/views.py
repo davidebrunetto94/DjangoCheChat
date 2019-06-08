@@ -101,7 +101,7 @@ def logout(request):
     auth_logout(request)
     return redirect('login')
 
-
+   #tested
 def info_chat_by_id(request, chat_id):
     chat = Chat.objects.filter(id=chat_id)
 
@@ -118,7 +118,7 @@ def info_chat_by_id(request, chat_id):
 
     return JsonResponse(response)
 
-
+    #tested
 def get_chat_by_user(request):
     """Get chat of the user"""
 
@@ -156,17 +156,20 @@ def get_last_message(request, chat_id):
                 'message': []
             }
 
+    elif not is_participants(chat_id, request.user.id):
+        response = {
+            'state': 'not a participant'
+        }
     else:
         response = {
-            'state': 'chat does not exist'
+            'state': 'chat not found'
         }
 
     return JsonResponse(response)
 
-
+    #tested (testare con titolo)
 def new_chat(request, title=""):
     """Create a new"""
-
     # TODO: controllare se l'utente è amico
     if request.user.is_authenticated:
         chat = Chat.objects.create(title=title)
@@ -267,14 +270,17 @@ def add_contact(request, added_user_id):
 
 
 def delete_contact(request, user_to_delete_id):
-    phonebook = PhoneBook.objects.get(owner=request.user)
-    response = {}
+    try:
+        phonebook = PhoneBook.objects.get(owner=request.user)
+    except PhoneBook.DoesNotExist:
+        phonebook = None
+        response = {'state': 'phonebook not found'}
 
-    if User.objects.filter(id=user_to_delete_id).exists() \
+    if User.objects.filter(id=user_to_delete_id).exists() and phonebook is not None \
             and phonebook.contacts.filter(id=user_to_delete_id).exists():
         response = {'state': 'successful'}
         phonebook.contacts.get(id=user_to_delete_id).delete()
-    elif phonebook.contacts.filter(id=user_to_delete_id).exists():
+    elif phonebook is not None and not phonebook.contacts.filter(id=user_to_delete_id).exists():
         response = {'state': 'user does not exist'}
 
     return JsonResponse(response)
