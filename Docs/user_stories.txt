@@ -1,6 +1,6 @@
 1) ViewConversation
 	US:
-	In qualità di utente voglio vedere la mia conversazione con un altro utente in modo da poter leggere i messaggi che mi ha inviato
+	In qualità di utente voglio vedere la mia conversazione con un altro utente/gruppo in modo da poter leggere i messaggi che mi ha inviato
 	AT:
 	L'utente deve poter selezionare, da una lista, la conversazione di suo interesse e visualizzare i messaggi di coloro che ne fanno parte.
 
@@ -46,32 +46,20 @@
 	AT:
 	Il gestore di un gruppo deve poter scegliere dalla rubrica un utente da aggiungere al gruppo. L'operazione dev'essere poi eseguita rispondendo in maniera affermativa a una richiesta di conferma, in modo da evitare aggiunte erronee.
 
-9) DeleteGroupParticipant
-	US:
-	In qualità di gestore di un gruppo voglio eliminare una persona che ne fa parte in modo che non partecipi più alla conversazione
-	AT:
-	Il gestore di un gruppo deve poter eliminare una persona dal gruppo, dopo averla selezionata tra i componenti. L'operazione dev'essere eseguita a seguito di una richiesta di conferma in modo da evitare errori.
-
-10) LeaveGroup
+9) LeaveGroup
 	US:
 	In qualità di membro di un gruppo voglio uscirne in modo da non ricevere più i suoi messaggi
 	AT:
 	Il membro di un gruppo deve poter uscire dallo stesso e non ricevere più messaggi. Uscire da un gruppo non significa eliminarlo. L'ex-membro non può rientrare autonomamente nel gruppo. Se ad uscire è l'unico amministratore del gruppo, allora il gruppo viene eliminato a seguito della sua uscita. L'operazione di abbandono del gruppo dev'essere eseguita a seguito di una richiesta di conferma in modo da evitare errori.
 
-11) ShowGroupParticipants
+10) ShowGroupParticipants
 	US:
 	In qualità di membro di un gruppo voglio vedere la lista dei suoi componenti in modo da sapere chi ne fa parte
 	AT:
 	Il membro di un gruppo deve poter visualizzare la lista dei suoi componenti. Da qui potrà vedere i profili dei singoli utenti e, se vuole, salvarli come contatti.
 
-12) AddContactToPhonebook
+11) AddContactToPhonebook
 	US:
 	In qualità di utente voglio aggiungere un'altro utente alla rubrica in modo da salvarne il contatto
 	AT:
 	Un utente qualunque può aggiungere un altro utente nella propria rubrica
-
-13) ShowUserProfile
-	US:
-	In qualità di utente voglio visualizzare le informazioni di un altro utente in modo che possa essere riconosciuto
-	AT:
-	Un utente qualunque deve poter visualizzare le informazioni rilevanti riguardanti un altro utente selezionandolo o dalla rubrica o dalla lista di componenti di un gruppo. Le informazioni da mostrare sono nome utente, data e ora dell'ultimo accesso, immagine del profilo. Da qui dev'essere possibile salvare l'utente nella rubrica (se non presente) e avviare una conversazione con lo stesso.
