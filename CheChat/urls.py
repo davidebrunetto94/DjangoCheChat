@@ -28,8 +28,6 @@ urlpatterns = [
     path('user/chat/', views.get_chat_by_user),
     path('users/get/id/<username>', views.get_id_from_username),
     path('user/get/current', views.get_current_user_id),
-    path('user/edit/email', views.change_email),
-    path('user/edit/imgUrl', views.change_img_url),
     path('', views.login, name='login'),
     path('chat/messages/<chat_id>', views.get_messages_by_id),
     path('chat/info/<chat_id>', views.info_chat_by_id),

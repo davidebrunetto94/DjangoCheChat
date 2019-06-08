@@ -50,6 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     var newMessageInput = document.getElementById('newMessageInput')
 
+    var addFriendToChat = document.getElementById('addFriendToChat');
+    var addFriendToChatA = document.getElementById('addFriendToChatA');
+    var addChatFriendButton = document.getElementById('addChatFriendButton')
+
     // Reset all view
     function resetView() {
         realChatList.classList.add('is-hidden');
@@ -65,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('addFriendA').classList.add('is-hidden');
 
         addFriend.classList.add('is-hidden')
+
+        addFriendToChat.classList.add('is-hidden');
     }
 
     // Success box (chatlist)
@@ -330,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chatTitle.querySelector('div').classList.add('is-hidden');
             chatTitle.querySelector('div input').value = "";
             updateChatList();
+            updateTitle(chatId)
         });
 
         event.stopPropagation()
@@ -346,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Remove user from participiants
-    deleteChatA.addEventListener('click', function (event){
+    deleteChatA.addEventListener('click', function (event) {
         event.preventDefault();
 
         loadJSON('chat/delete/participant/' + chatTitle.dataset.id).then(async function (response) {
@@ -368,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             response = JSON.parse(response)
             chatList.innerHTML = "";
 
-            if(response.chat == undefined){
+            if (response.chat == undefined) {
                 return;
             }
 
@@ -419,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <li>
                         <a href="" class="chatListA" data-id="` + id.id + `">
                             <div class="columns">
-                                <div class="column is-2">
+                                <div class="column is-2` + ((isGroup == "true") ? ` is-hidden`  : ``)  + `">
                                     <figure class="imageis-square">
                                         <img src="` + thumbnail + `" alt="avatar" class="is-rounded">
                                     </figure>
@@ -547,7 +554,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                                     //Change chat title
                                     chatTitle.querySelector('span').innerHTML = title;
-                                    document.getElementById('lastOnline').classList.remove('is-hidden');
                                     document.getElementById('thumbnailChat').classList.remove('is-hidden');
 
                                     document.getElementById('lastOnline').innerHTML = 'Last online: ' + lastOnline;
@@ -558,10 +564,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 });
             } else {
-                document.getElementById('lastOnline').classList.add('is-hidden');
                 document.getElementById('thumbnailChat').classList.add('is-hidden');
                 chatTitle.querySelector('span').innerHTML = title;
+
+                // Participants list
+
+                loadJSON('chat/get/participants/' + id).then(async function (response) {
+                    participants = JSON.parse(response).participants;
+
+                    participantsList = []
+
+                    Object.keys(participants).forEach(k => {
+                        participantsList.push(participants[k].username);
+                    });
+
+                    document.getElementById('lastOnline').innerHTML =  participantsList.join(", ");
+                });
             }
         });
     }
+
+    // Add friend to chat listener ahref
+    addFriendToChatA.addEventListener('click', function (event) {
+        event.preventDefault();
+        resetView();
+
+        addFriendToChat.classList.remove('is-hidden');
+    });
+
+    // Add friend to chat listener button
+    addChatFriendButton.addEventListener('click', function () {
+        var username = document.getElementById('friendNameChat').value;
+
+        loadJSON('users/get/id/' + username).then(function (response) {
+            userId = JSON.parse(response).id;
+
+            loadJSON('chat/add/participant/' + userId + '/' + chatTitle.dataset.id).then(function (response) {
+                response = JSON.parse(response);
+
+                if (response.state == 'successful') {
+                    success('Friend added!');
+                    updateTitle(chatTitle.dataset.id)
+                    document.getElementById('friendNameChat').value = ''
+                } else {
+                    bad(response.state)
+                }
+            });
+        });
+
+    });
 });

@@ -57,18 +57,6 @@
             </div>
 
             <div class="menu-label">
-                <a href="account/logout/" title="Settings" class="has-text-grey">
-                    <span class="icon is-large">
-                        <span class="fa-stack fa-2x">
-                            <i class="fas fa-circle fa-stack-2x"></i>
-                            <i class="fas fa-users-cog fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </span>
-                    Settings
-                </a>
-            </div>
-
-            <div class="menu-label">
                 <a href="account/logout/" title="Logout" class="has-text-grey">
                     <span class="icon is-large">
                         <span class="fa-stack fa-2x">
@@ -169,6 +157,22 @@
             </div>
         </div>
 
+        <div id="addFriendToChat" class="has-text-centered is-hidden">
+            <div class="field">
+                <label class="label">Add friend to the chat</label>
+                <div class="control">
+                    <input id="friendNameChat" class="input" type="text" placeholder="Friend name...">
+                </div>
+            </div>
+
+
+            <div class="field">
+                <div class="control has-text-centered">
+                    <button id="addChatFriendButton" class="button is-link">Add</button>
+                </div>
+            </div>
+        </div>
+
     </div>
     <div id="chatSingle" class="column is-9 has-background-white">
         <nav class="level is-hidden">
@@ -178,7 +182,8 @@
                     <div class="columns">
                         <div class="column is-3">
                             <figure class="image is-48x48">
-                                <img id="thumbnailChat" src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                                <img id="thumbnailChat" src="https://bulma.io/images/placeholders/128x128.png"
+                                    alt="avatar" class="is-rounded">
                             </figure>
                         </div>
                         <div class="column">
@@ -200,10 +205,10 @@
                 </div>
             </div>
 
-            <!-- Right side -->
+            <!-- Right side  -->
             <div class="level-right">
                 <div class="menu-label">
-                    <a href="" title="Start group chat" class="has-text-grey">
+                    <a id="addFriendToChatA" href="" title="Start group chat" class="has-text-grey">
                         <span class="icon is-large">
                             <span class="fa-stack fa-2x fa-multiple">
                                 <i class="fas fa-circle fa-stack-2x has-text-light"></i>
@@ -229,6 +234,8 @@
         <div id="noChats" class="has-text-centered">
             <span class="title">Open a chat!</span>
         </div>
+
+        <!-- Messages list -->
         <div class="messages is-hidden">
             <div class="container">
                 <ul id="chatMessages">
@@ -236,10 +243,12 @@
             </div>
         </div>
 
+        <!-- Message input -->
         <div class="send is-hidden">
             <div class="field">
                 <p class="control has-icons-right">
-                    <input id="newMessageInput" class="input" type="text" placeholder="Type a message..." class="has-text-grey-light">
+                    <input id="newMessageInput" class="input" type="text" placeholder="Type a message..."
+                        class="has-text-grey-light">
                     <span id="newMessageSend" class="icon is-small is-right">
                         <i class="far fa-paper-plane"></i>
                     </span>

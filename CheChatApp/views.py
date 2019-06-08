@@ -193,7 +193,8 @@ def add_participant(request, user_id, chat_id):
         An user can add himself, only if the chat doesn't have any participants (so it's the creator)
     """
 
-    # TODO: controllare gli il participiant sia amico dell'utente che aggiunge
+    # TODO: controllare che il participiant sia amico dell'utente che aggiunge
+    # TODO: aggiungere un titolo alla chat se da 2 persone si passa a 3 (va bene anche il nome del creatore)
 
     if is_participants(chat_id, request.user.id) or \
             (request.user.id == int(user_id) and len(Chat.objects.get(id=chat_id).participants.values_list()) == 0):
@@ -332,26 +333,6 @@ def exit_group(request, chat_id):
     else:
         response = {'state': 'fail'}
 
-    return JsonResponse(response)
-
-
-def change_email(request):
-    if 'new_email_address' not in request.POST:
-        response = {'state': 'fail'}
-    else:
-        request.user.email = request.POST.get('new_email_address')
-        request.user.save()
-        response = {'state': 'successful'}
-    return JsonResponse(response)
-
-
-def change_img_url(request):
-    if 'new_img_url' not in request.POST:
-        response = {'state' : 'fail'}
-    else:
-        request.user.chatuser.profileImage = request.POST.get('new_img_url')
-        request.user.chatuser.save()
-        response = {'state': 'successful'}
     return JsonResponse(response)
 
 
