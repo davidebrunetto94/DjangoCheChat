@@ -12,9 +12,7 @@ import json
 
 class AddParticipantTestCase(TestCase):
     def setUp(self):
-        User = get_user_model()
-        #creo due user
-
+        self.client = Client()
 
     #User who created the chat tries to add himself twice. Expected result -> 'user exists'
     def test_add_participant_twice(self):

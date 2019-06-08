@@ -1,10 +1,5 @@
-import requests
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from CheChatApp.views import login
-from CheChatApp.views import logout
-from django.shortcuts import render
-# Create your tests here.
 
 
 class LoginTestCase(TestCase):
