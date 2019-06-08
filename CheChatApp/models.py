@@ -11,7 +11,7 @@ class Chat(models.Model):
     title = models.CharField('Title', max_length=30)
     # se non è un gruppo, title = None
     participants = models.ManyToManyField(User, blank=True, default=None)
-    created = models.DateTimeField('Timestamp', auto_now_add=True)
+    lastMessage = models.DateTimeField('Timestamp', auto_now_add=True)
 
 
 class PhoneBook(models.Model):

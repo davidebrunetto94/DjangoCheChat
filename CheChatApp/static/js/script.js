@@ -311,14 +311,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /** Change title */
-    /* Title click listener */
+    // Title click listener 
     chatTitle.addEventListener('click', function (event) {
         event.preventDefault();
         chatTitle.querySelector('span').classList.add('is-hidden');
         chatTitle.querySelector('div').classList.remove('is-hidden');
     });
 
-    /* Confirm button title listener */
+    // Confirm button title listener
     changeTitle.addEventListener('click', function (event) {
         event.preventDefault();
 
@@ -329,6 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chatTitle.querySelector('span').classList.remove('is-hidden');
             chatTitle.querySelector('div').classList.add('is-hidden');
             chatTitle.querySelector('div input').value = "";
+            updateChatList();
         });
 
         event.stopPropagation()
@@ -346,29 +347,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* Chat list */
     async function updateChatList() {
-        chatList.innerHTML = "";
-
         //Get user chat
         await loadJSON('user/chat/').then(async function (response) {
             response = JSON.parse(response)
+            chatList.innerHTML = "";
 
             // Get info about all chat
             for (let id of response.chat) {
-                await loadJSON('chat/info/' + id.id).then(function (response) {
+                await loadJSON('chat/info/' + id.id).then(async function (response) {
                     response = JSON.parse(response)
                     var title = response.title;
                     var isGroup = response.isGroup;
-                    var chatCreated = new Date(response.created);
 
                     // Get last message
-                    loadJSON('chat/get/last/' + id.id).then(async function (response) {
+                    await loadJSON('chat/get/last/' + id.id).then(async function (response) {
                         response = JSON.parse(response)
 
                         var lastMessage = response.message;
                         var timestamp = new Date(response.message.timestamp);
 
                         if (isNaN(timestamp)) {
-                            timestamp = chatCreated;
+                            timestamp = new Date();
                         }
 
                         if (lastMessage.length == 0) {
@@ -377,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             lastMessage = lastMessage.text;
                         }
 
-                        if (isGroup != "true") {
+                        if (isGroup == "false") {
                             // The username of the other user should be shown if it's not a group chat
                             await loadJSON('user/get/current').then(async function (response) {
                                 userId = JSON.parse(response).id;
@@ -433,6 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 chatId = element.dataset.id;
 
                 updateChatMessages(chatId);
+                updateTitle(chatId);
             });
         });
     }
@@ -449,11 +449,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 var userId = JSON.parse(response).id;
 
                 for (let chat of messages) {
-                    isUser = ((userId == chat.sender) ? 'class="my-message"' : '');
-                    chatMessages.innerHTML += `
+                    await loadJSON('users/get/' + chat.sender).then(async function (response) {
+                        response = JSON.parse(response);
+
+                        isUser = ((userId == chat.sender) ? 'class="my-message"' : '');
+                        chatMessages.innerHTML += `
             <li ` + isUser + `>
                 <figure class="image is-32x32">
-                    <img src="https://bulma.io/images/placeholders/128x128.png" alt="avatar" class="is-rounded">
+                    <img src="` + response.thumbnail + `" alt="avatar" class="is-rounded">
                 </figure>
                 <div class="content">
                     <div class="message">
@@ -464,6 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="has-text-grey-light">` + (new Date(chat.timestamp)).toLocaleTimeString("default", { hour: "2-digit", minute: "2-digit" }) + `</span>
                 </div>
             </li>`;
+                    });
                 }
 
                 // Scroll to the last message
@@ -472,6 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         newMessageInput.setAttribute('data-id', chatId);
+        chatTitle.setAttribute('data-id', chatId);
     }
 
     // Send message input
@@ -482,8 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (key === 13) {
             var chatId = newMessageInput.dataset.id;
 
-            console.log(chatId)
-
             loadJSON('chat/add/message/', 'POST', 'id=' + chatId + '&message_body=' + encodeURI(newMessageInput.value)).then(async function (response) {
                 updateChatMessages(chatId);
                 updateChatList();
@@ -491,4 +494,45 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // Update chat title
+    function updateTitle(id) {
+        loadJSON('chat/info/' + id).then(function (response) {
+            response = JSON.parse(response)
+            var title = response.title;
+            var isGroup = response.isGroup;
+
+            if (isGroup == "false") {
+                // The username of the other user should be shown if it's not a group chat
+                loadJSON('user/get/current').then(async function (response) {
+                    userId = JSON.parse(response).id;
+
+                    await loadJSON('chat/get/participants/' + id).then(async function (response) {
+                        for (let user of JSON.parse(response).participants) {
+                            if (userId != user.id) {
+                                await loadJSON('users/get/' + user.id).then(async function (response) {
+                                    response = JSON.parse(response)
+                                    var title = response.username;
+                                    var lastOnline = response.lastlogin;
+                                    var thumbnail = response.thumbnail
+
+                                    //Change chat title
+                                    chatTitle.querySelector('span').innerHTML = title;
+                                    document.getElementById('lastOnline').classList.remove('is-hidden');
+                                    document.getElementById('thumbnailChat').classList.remove('is-hidden');
+
+                                    document.getElementById('lastOnline').innerHTML = 'Last online: ' + lastOnline;
+                                    document.getElementById('thumbnailChat').src = thumbnail;
+                                });
+                            }
+                        }
+                    });
+                });
+            } else {
+                document.getElementById('lastOnline').classList.add('is-hidden');
+                document.getElementById('thumbnailChat').classList.add('is-hidden');
+                chatTitle.querySelector('span').innerHTML = title;
+            }
+        });
+    }
 });

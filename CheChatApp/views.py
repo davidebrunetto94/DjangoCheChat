@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -34,7 +36,6 @@ def get_user_info(request, user_id):
 
         if chat_user.exists():
             thumbnail = list(chat_user)[0]
-            print(thumbnail)
         else:
             thumbnail = ''
 
@@ -112,7 +113,7 @@ def info_chat_by_id(request, chat_id):
     response = {
         'title': chat[0].title,
         'isGroup': group,
-        'created': chat[0].created
+        'lastMessage': chat[0].lastMessage
     }
 
     return JsonResponse(response)
@@ -121,10 +122,8 @@ def info_chat_by_id(request, chat_id):
 def get_chat_by_user(request):
     """Get chat of the user"""
 
-    chat = Chat.objects.filter(participants__in=str(request.user.id)).order_by('-created')
+    chat = Chat.objects.filter(participants__in=str(request.user.id)).order_by('-lastMessage')
     response = {}
-
-    print(list(chat))
     
     if chat.exists():
         response = {
@@ -286,6 +285,13 @@ def send_message(request):
         Message(text=request.POST.get('message_body'),
                 sender=list(User.objects.filter(id=request.user.id))[0],
                 chat=list(Chat.objects.filter(id=chat_id))[0]).save()
+
+        chatSave = Chat.objects.get(id=chat_id)
+        chatSave.lastMessage = datetime.datetime.now()
+        chatSave.save()
+
+        print(datetime.datetime.now())
+
         response = {'state': 'successful'}
     else:
         response = {'state': 'chat does not exist'}
