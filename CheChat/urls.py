@@ -28,6 +28,8 @@ urlpatterns = [
     path('user/chat/', views.get_chat_by_user),
     path('users/get/id/<username>', views.get_id_from_username),
     path('user/get/current', views.get_current_user_id),
+    path('user/edit/email', views.change_email),
+    path('user/edit/imgUrl', views.change_img_url),
     path('', views.login, name='login'),
     path('chat/messages/<chat_id>', views.get_messages_by_id),
     path('chat/info/<chat_id>', views.info_chat_by_id),
@@ -35,6 +37,7 @@ urlpatterns = [
     path('chat/new', views.new_chat, name='user_id'),
     path('chat/new/<title>', views.new_chat),
     path('chat/add/participant/<user_id>/<chat_id>', views.add_participant, name='info'),
+    path('chat/delete/participant/<chat_id>', views.exit_group),
     path('chat/get/participants/<chat_id>', views.get_participants),
     path('chat/change/title/<chat_id>/<new_chat_title>', views.change_chat_title),
     path('chat/add/message/', views.send_message)
