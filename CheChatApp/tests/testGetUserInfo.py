@@ -18,13 +18,12 @@ class GetUserInfoTestCase(TestCase):
         self.client.login(username='davideTest', password='ciao12345')
         login_time = datetime.datetime.now().strftime('%d %b %Y')
 
-        #users/get/<user_id>
 
         #chiedo info user
         URL = 'http://127.0.0.1:8000/users/get/' + str(user.id)
         response = self.client.post(URL)
 
-        #campi della risposta json
+        #campo username della risposta json
         username_response = (json.loads(response.content)["username"])
 
         self.assertEqual(username, username_response)
@@ -49,8 +48,6 @@ class GetUserInfoTestCase(TestCase):
         # login col primo utente
         self.client.login(username='davideTest', password='ciao12345')
 
-        # users/get/<user_id>
-
         # chiedo info user
         URL = 'http://127.0.0.1:8000/users/get/' + str(user2.id)
         response = self.client.post(URL)
@@ -61,8 +58,8 @@ class GetUserInfoTestCase(TestCase):
 
         self.assertEqual(username2, username_response) and self.assertEqual(login_time_second_user, last_login_response)
 
-        # user asks for his own login
-    def test_get_user_info_correct_login(self):
+        # user asks for his own login time
+    def test_get_user_info_correct_login_time(self):
         # creo nuovo user
         username = 'davideTest'
         user = User.objects.create_user(username, 'davide.brunetto12Test@gmail.com', 'ciao12345')
@@ -71,7 +68,6 @@ class GetUserInfoTestCase(TestCase):
         self.client.login(username='davideTest', password='ciao12345')
         login_time = datetime.datetime.now().strftime('%d %b %Y')
 
-        # users/get/<user_id>
 
         # chiedo info user
         URL = 'http://127.0.0.1:8000/users/get/' + str(user.id)
@@ -125,7 +121,7 @@ class GetUserInfoTestCase(TestCase):
 
         # users/get/<user_id>
 
-        # chiedo info user
+        # chiedo info user inesistente
         URL = 'http://127.0.0.1:8000/users/get/' + str(-1)
         response = self.client.post(URL)
 

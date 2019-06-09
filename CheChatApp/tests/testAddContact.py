@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from CheChatApp.models import PhoneBook
 import json
 
 class AddContactTestCase(TestCase):
@@ -7,7 +8,7 @@ class AddContactTestCase(TestCase):
         self.client = Client()
 
     #user adds another user as a contact
-    def test_add_contact(self):
+    def test_add_contact_json(self):
         # creo user loggato
         user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
         self.client.login(username='davideTest', password='ciao12345')
@@ -23,6 +24,25 @@ class AddContactTestCase(TestCase):
 
         self.assertEqual(state, 'successful')
 
+    def test_add_contact(self):
+        # creo user loggato
+        user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
+        self.client.login(username='davideTest', password='ciao12345')
+
+        #creo secondo user
+        user2 = User.objects.create_user('davideTest2', 'davide.brunetto12Test@gmail.com', 'ciao12345')
+
+        #aggiungo secondo user come contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        self.client.post(URL)
+
+        #chiedo lista contatti dello user
+        URL = 'http://127.0.0.1:8000/account/contacts/'
+
+        #chiedo phonebook dell'user
+        phonebook = PhoneBook.objects.filter(owner=user)
+
+        self.assertIn(user2.id, list(phonebook.values_list('contacts', flat=True)))
 
     #user adds himself as a contact
     def test_add_same_user_as_contact(self):
