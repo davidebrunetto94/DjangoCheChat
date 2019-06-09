@@ -132,7 +132,7 @@ def get_chat_by_user(request):
         }
     else:
         response = {
-            'state': 'chat doesn\'t exists'
+            'state': 'chat doesn\'t exist'
         }
 
     return JsonResponse(response)
@@ -249,7 +249,7 @@ def get_contacts(request):
     if phonebook is not None:
         response = {
             'state': 'successful',
-            'contacts': list(phonebook.values_list('contacts', flat=True))
+            'contacts': list(phonebook.contacts.values_list(flat=True))
         }
 
     return JsonResponse(response)

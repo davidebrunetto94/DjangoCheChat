@@ -33,10 +33,10 @@ class GetContactsTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/account/contacts/'
         true_response = self.client.post(URL)
 
-        phonebook = PhoneBook.objects.filter(owner=user)
+        phonebook = PhoneBook.objects.get(owner=user)
         response_expected = {
             'state': 'successful',
-            'contacts': list(phonebook.values_list('contacts', flat=True))
+            'contacts': list(phonebook.contacts.values_list(flat=True))
         }
 
         self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))

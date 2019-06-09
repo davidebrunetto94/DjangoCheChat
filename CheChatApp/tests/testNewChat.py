@@ -45,6 +45,7 @@ class NewChatTestCase(TestCase):
 
 
     def test_new_chat_owner(self):
+        user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
         #check if owner of the chat is right
         self.client.login(username='davideTest', password='ciao12345')
         URL = 'http://127.0.0.1:8000/chat/new/titolo'
@@ -55,6 +56,7 @@ class NewChatTestCase(TestCase):
 
 
     def test_new_chat_title(self):
+        user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
         title = 'titolo'
         self.client.login(username='davideTest', password='ciao12345')
         URL = 'http://127.0.0.1:8000/chat/new/' + title

@@ -27,11 +27,8 @@ class AddParticipantTestCase(TestCase):
         #id della chat
         chat_id = (json.loads(response_creation.content)["id"])
 
-        # aggiungo il creatore alla chat
-        URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user.id) + '/' + str(chat_id)
-        self.client.post(URL)
-
         # tento di aggiungere lo stesso utente alla chat
+        URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user.id) + '/' + str(chat_id)
         request = self.client.post(URL)
 
         #controllo che il json restituito mi dica che lo user esiste già
@@ -53,10 +50,6 @@ class AddParticipantTestCase(TestCase):
 
         # id della chat
         chat_id = (json.loads(response_creation.content)["id"])
-
-        # aggiungo il creatore alla chat
-        URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user.id) + '/' + str(chat_id)
-        self.client.post(URL)
 
         # aggiungo secondo utente alla chat
         URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user_to_add.id) + '/' + str(chat_id)
@@ -82,10 +75,6 @@ class AddParticipantTestCase(TestCase):
 
         # id della chat
         chat_id = (json.loads(response_creation.content)["id"])
-
-        # aggiungo il creatore alla chat
-        URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user.id) + '/' + str(chat_id)
-        self.client.post(URL)
 
         # aggiungo secondo utente alla chat
         URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user_to_add.id) + '/' + str(chat_id)
@@ -114,10 +103,6 @@ class AddParticipantTestCase(TestCase):
 
         # id della chat
         chat_id = (json.loads(response_creation.content)["id"])
-
-        # aggiungo il creatore alla chat
-        URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user.id) + '/' + str(chat_id)
-        self.client.post(URL)
 
         #logout primo user
         self.client.logout()
@@ -154,10 +139,6 @@ class AddParticipantTestCase(TestCase):
 
         # id della chat
         chat_id = (json.loads(response_creation.content)["id"])
-
-        # aggiungo il creatore alla chat
-        URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user.id) + '/' + str(chat_id)
-        self.client.post(URL)
 
         # logout primo user
         self.client.logout()

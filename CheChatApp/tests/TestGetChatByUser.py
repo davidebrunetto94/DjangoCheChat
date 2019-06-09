@@ -21,7 +21,7 @@ class GetChatByUserTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/user/chat/'
         true_response = self.client.post(URL)
 
-        chat = Chat.objects.filter(participants__in=str(user.id)).order_by('-created')
+        chat = Chat.objects.filter(participants__in=str(user.id)).order_by('-lastMessage')
 
         response_expected = {
             'state': 'successful',
@@ -47,7 +47,7 @@ class GetChatByUserTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/user/chat/'
         true_response = self.client.post(URL)
 
-        chat = Chat.objects.filter(participants__in=str(user.id)).order_by('-created')
+        chat = Chat.objects.filter(participants__in=str(user.id)).order_by('-lastMessage')
 
         response_expected = {
             'state': 'successful',
@@ -65,10 +65,10 @@ class GetChatByUserTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/user/chat/'
         true_response = self.client.post(URL)
 
-        chat = Chat.objects.filter(participants__in=str(user.id)).order_by('-created')
+        chat = Chat.objects.filter(participants__in=str(user.id)).order_by('-lastMessage')
 
         response_expected = {
-            'state': 'no chat found'
+            'state': 'chat doesn\'t exist'
         }
 
         self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))
