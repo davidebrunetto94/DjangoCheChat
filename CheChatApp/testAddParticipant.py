@@ -62,7 +62,7 @@ class AddParticipantTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user_to_add.id) + '/' + str(chat_id)
         request = self.client.post(URL)
 
-        # controllo che il json restituito mi dica che lo user esiste già
+        # controllo che il json restituito mi dia succesful
         self.assertContains(request, 'successful')
 
 
@@ -129,11 +129,12 @@ class AddParticipantTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user_to_add.id) + '/' + str(chat_id)
         request = self.client.post(URL)
 
-        # controllo che il json restituito mi dia fallimento
-        self.assertContains(request, 'not a participant')
+        # chiedo chat
+        chat = Chat.objects.filter(id=chat_id)
+
+        self.assertNotIn(user_to_add.id, list(chat.values_list('participants', flat=True)))
 
     # User different from the one who has created and is not a participant the chat tries to add another user
-    # expected result -> 'not a participant'
     def test_not_participant_adds_other_user(self):
         # creo user proprietario chat
         user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
@@ -168,7 +169,8 @@ class AddParticipantTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user_to_add.id) + '/' + str(chat_id)
         request = self.client.post(URL)
 
-        # controllo che il json restituito mi dia fallimento
-        self.assertContains(request, 'not a participant')
+        # chiedo chat
+        chat = Chat.objects.filter(id=chat_id)
+        self.assertNotIn(user_to_add.id, list(chat.values_list('participants', flat=True)))
 
 
