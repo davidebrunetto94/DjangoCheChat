@@ -240,12 +240,17 @@ def get_participants(request, chat_id):
 
     #tested
 def get_contacts(request):
-    phonebook = PhoneBook.objects.filter(owner=request.user)
+    try:
+        phonebook = PhoneBook.objects.get(owner=request.user)
+    except PhoneBook.DoesNotExist:
+        phonebook = None
+        response = {'state': 'phonebook not found'}
 
-    response = {
-        'state': 'successful',
-        'contacts': list(phonebook.values_list('contacts', flat=True))
-    }
+    if phonebook is not None:
+        response = {
+            'state': 'successful',
+            'contacts': list(phonebook.values_list('contacts', flat=True))
+        }
 
     return JsonResponse(response)
 
