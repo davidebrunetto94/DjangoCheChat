@@ -40,8 +40,8 @@ class NewChatTestCase(TestCase):
         response = self.client.post(URL)
         chat_id_response = (json.loads(response.content)["id"])
 
-        chat_id = Chat.objects.get(id=chat_id_response)
-        self.assertIsNotNone(chat_id_response)
+        chat = Chat.objects.get(id=chat_id_response)
+        self.assertIsNotNone(chat)
 
 
     def test_new_chat_owner(self):
