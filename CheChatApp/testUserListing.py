@@ -1,13 +1,6 @@
-import requests
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 import json
-import datetime
-from CheChatApp.views import login
-from CheChatApp.models import Chat
-from CheChatApp.models import ChatUser
-from CheChatApp.views import logout
-from django.shortcuts import render
 
 
 class UserListingTestCase(TestCase):
@@ -31,7 +24,7 @@ class UserListingTestCase(TestCase):
             'user': list_username,
             'id': list_id
         }
-        # users/', views.user_listing),
+
         #chiedo id su user appena creato
         URL = 'http://127.0.0.1:8000/users/'
         true_response = self.client.post(URL)

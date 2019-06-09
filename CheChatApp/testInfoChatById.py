@@ -19,7 +19,7 @@ class InfoChatByIdTestCase(TestCase):
         # id della chat
         chat_id = (json.loads(response_creation.content)["id"])
 
-        #    path('chat/info/<chat_id>', views.info_chat_by_id)
+        # richiedo info
         URL = 'http://127.0.0.1:8000/chat/info/' + str(chat_id)
         true_response = self.client.post(URL)
 

@@ -8,7 +8,7 @@ class DeleteContactTestCase(TestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_delete_contact(self):
+    def test_delete_contact_json(self):
         # creo user1
         user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
 
@@ -29,7 +29,7 @@ class DeleteContactTestCase(TestCase):
 
         self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))
 
-    def test_delete_contact(self):
+    def test_delete_contact_one(self):
         # creo user1
         user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
 
@@ -42,15 +42,45 @@ class DeleteContactTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
         self.client.post(URL)
 
-        # account/contacts/delete/<user_to_delete_id>
+        # cancello contatto
         URL = 'http://127.0.0.1:8000/account/contacts/delete/' + str(user2.id)
         self.client.post(URL)
 
         phonebook = PhoneBook.objects.get(owner=user)
 
         contacts_list = phonebook.contacts.values_list('id', flat=True)
-        print(contacts_list)
         self.assertQuerysetEqual(contacts_list, User.objects.none())
+
+    def test_delete_contact_multiple(self):
+        # creo user1
+        user = User.objects.create_user('davideTest', 'davide.brunetto12Test@gmail.com', 'ciao12345')
+
+        # creo secondo user diverso
+        user2 = User.objects.create_user('davide2', 'davide.brunetto12Test@gmail.it', 'password')
+
+        # creo terzo user diverso
+        user3 = User.objects.create_user('davide3', 'davide.brunetto12Test@gmail.it', 'password')
+
+        self.client.login(username='davideTest', password='ciao12345')
+
+        # Aggiungo secondo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        self.client.post(URL)
+
+        # Aggiungo terzo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user3.id)
+        self.client.post(URL)
+
+        # cancello secondo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/delete/' + str(user2.id)
+        self.client.post(URL)
+
+        phonebook = PhoneBook.objects.get(owner=user)
+
+        #chiedo phonebook dell'user
+        phonebook = PhoneBook.objects.filter(owner=user)
+
+        self.assertNotIn(user2.id, list(phonebook.values_list('contacts', flat=True)))
 
     def test_delete_contact_phonebook_doesnt_exist(self):
         # creo user1
