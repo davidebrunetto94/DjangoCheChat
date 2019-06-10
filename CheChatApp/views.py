@@ -168,9 +168,6 @@ def get_last_message(request, chat_id):
     return JsonResponse(response)
 
 
-
-
-
     #tested
 def new_chat(request, title=""):
     """Create a new"""
@@ -180,6 +177,9 @@ def new_chat(request, title=""):
         chat.save()
 
         add_participant(request, request.user.id, chat.id)
+
+        if title == "":
+            chat.title = "Chat"
         response = {
             'state': 'successful',
             'id': chat.id,
@@ -208,7 +208,6 @@ def add_participant(request, user_id, chat_id):
         An user can add himself, only if the chat doesn't have any participants (so it's the creator)
     """
 
-    # TODO: controllare che il participiant sia amico dell'utente che aggiunge
     # TODO: aggiungere un titolo alla chat se da 2 persone si passa a 3 (va bene anche il nome del creatore)
     if is_friend(request.user.id, user_id):
         if is_participants(chat_id, request.user.id) or \
