@@ -194,6 +194,8 @@ def new_chat(request, title=""):
 
 
 def is_friend(current_user_id, user_id):
+    if current_user_id == int(user_id):
+        return True
 
     pb = PhoneBook.objects.get(owner=User.objects.get(id=current_user_id))
     return pb.contacts.filter(id=user_id).exists()
