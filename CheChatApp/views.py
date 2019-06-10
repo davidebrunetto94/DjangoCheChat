@@ -42,7 +42,7 @@ def get_user_info(request, user_id):
         response = {
             'username': list(user)[0][0],
             'thumbnail': thumbnail,
-            'lastlogin': list(user)[0][1].strftime('%d %b %Y')
+            'lastlogin': '' if list(user)[0][1] is None else list(user)[0][1].strftime('%d %b %Y')
         }
     else:
         response = {
