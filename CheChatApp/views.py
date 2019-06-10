@@ -167,6 +167,10 @@ def get_last_message(request, chat_id):
 
     return JsonResponse(response)
 
+
+
+
+
     #tested
 def new_chat(request, title=""):
     """Create a new"""
@@ -189,6 +193,12 @@ def new_chat(request, title=""):
     return JsonResponse(response)
 
 
+def is_friend(current_user_id, user_id):
+
+    pb = PhoneBook.objects.get(owner=User.objects.get(id=current_user_id))
+    return pb.contacts.filter(id=user_id).exists()
+
+
 def add_participant(request, user_id, chat_id):
     """
         Add a participant to a chat
@@ -198,24 +208,28 @@ def add_participant(request, user_id, chat_id):
 
     # TODO: controllare che il participiant sia amico dell'utente che aggiunge
     # TODO: aggiungere un titolo alla chat se da 2 persone si passa a 3 (va bene anche il nome del creatore)
+    if is_friend(request.user.id, user_id):
+        if is_participants(chat_id, request.user.id) or \
+                (request.user.id == int(user_id) and len(Chat.objects.get(id=chat_id).participants.values_list()) == 0):
 
-    if is_participants(chat_id, request.user.id) or \
-            (request.user.id == int(user_id) and len(Chat.objects.get(id=chat_id).participants.values_list()) == 0):
+            chat = Chat.objects.filter(id=chat_id)
 
-        chat = Chat.objects.filter(id=chat_id)
-
-        if chat[0].participants.filter(id=user_id).exists():
-            response = {
-                'state': 'user exists'
-            }
+            if chat[0].participants.filter(id=user_id).exists():
+                response = {
+                    'state': 'user exists'
+                }
+            else:
+                chat[0].participants.add(user_id)
+                response = {
+                    'state': 'successful'
+                }
         else:
-            chat[0].participants.add(user_id)
             response = {
-                'state': 'successful'
+                'state': 'not a participant'
             }
     else:
         response = {
-            'state': 'not a participant'
+            'state': 'user is not friend'
         }
 
     return JsonResponse(response)
