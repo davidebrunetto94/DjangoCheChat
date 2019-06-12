@@ -216,7 +216,7 @@ class AcceptanceTest(TestCase):
 
         response = self.client.post('http://127.0.0.1:8000/chat/delete/participant/' + chat_id_response)
 
-        self.assert_(Chat.objects.get(id=chat_id_response).participants.filter(id=user1.id).exists())
+        self.assert_(not Chat.objects.get(id=chat_id_response).participants.filter(id=user1.id).exists())
         self.assertJSONEqual(json.dumps({'state' : 'successful'}), json.loads(response.content))
 
         #9
