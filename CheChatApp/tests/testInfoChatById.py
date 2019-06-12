@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 import json
+from django.core.serializers.json import DjangoJSONEncoder
+from CheChatApp.models import Chat
 
 
 class InfoChatByIdTestCase(TestCase):
@@ -23,13 +25,17 @@ class InfoChatByIdTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/chat/info/' + str(chat_id)
         true_response = self.client.post(URL)
 
+        chat = Chat.objects.get(id=chat_id)
+
         # se non si dà il titolo, il titolo sarà stringa vuota
         response_expected = {
             'title': '',
-            'isGroup': 'false'
+            'isGroup': 'false',
+            'lastMessage': chat.lastMessage
         }
 
-        self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))
+        self.assertJSONEqual(json.dumps(response_expected, sort_keys=True,indent=1,cls=DjangoJSONEncoder),
+                             json.loads(true_response.content))
 
     def test_info_chat_by_id_two_users(self):
         # creo user proprietario chat
@@ -54,13 +60,17 @@ class InfoChatByIdTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/chat/info/' + str(chat_id)
         true_response = self.client.post(URL)
 
+        chat = Chat.objects.get(id=chat_id)
+
         # se non si dà il titolo, il titolo sarà stringa vuota
         response_expected = {
             'title': '',
-            'isGroup': 'false'
+            'isGroup': 'false',
+            'lastMessage': chat.lastMessage
         }
 
-        self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))
+        self.assertJSONEqual(json.dumps(response_expected, sort_keys=True,indent=1,cls=DjangoJSONEncoder),
+                             json.loads(true_response.content))
 
     def test_info_chat_by_id_multiple_users(self):
         # creo user proprietario chat
@@ -91,14 +101,17 @@ class InfoChatByIdTestCase(TestCase):
         # richiedo info chat
         URL = 'http://127.0.0.1:8000/chat/info/' + str(chat_id)
         true_response = self.client.post(URL)
+        chat = Chat.objects.get(id=chat_id)
 
         # se non si dà il titolo, il titolo sarà stringa vuota
         response_expected = {
             'title': '',
-            'isGroup': 'true'
+            'isGroup': 'true',
+            'lastMessage': chat.lastMessage
         }
 
-        self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))
+        self.assertJSONEqual(json.dumps(response_expected, sort_keys=True,indent=1,cls=DjangoJSONEncoder),
+                             json.loads(true_response.content))
 
     def test_info_chat_by_id_with_title(self):
         #titolo chat
@@ -132,13 +145,16 @@ class InfoChatByIdTestCase(TestCase):
         URL = 'http://127.0.0.1:8000/chat/info/' + str(chat_id)
         true_response = self.client.post(URL)
 
+        chat = Chat.objects.get(id=chat_id)
         # se non si dà il titolo, il titolo sarà stringa vuota
         response_expected = {
             'title': title,
-            'isGroup': 'true'
+            'isGroup': 'true',
+            'lastMessage': chat.lastMessage
         }
 
-        self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))
+        self.assertJSONEqual(json.dumps(response_expected, sort_keys=True, indent=1, cls=DjangoJSONEncoder),
+                             json.loads(true_response.content))
 
 
 

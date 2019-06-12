@@ -37,7 +37,7 @@
 
 7) AddParticipant
 	US:
-	In qualità di partecipante di una chat voglio aggiungere le persone in modo che ne facciano parte
+	In qualità di creatore di una chat voglio aggiungere le persone in modo che ne facciano parte
 	AT:
 	Il gestore di un gruppo deve poter scegliere dalla rubrica un utente da aggiungere al gruppo. L'operazione dev'essere poi eseguita rispondendo in maniera affermativa a una richiesta di conferma, in modo da evitare aggiunte erronee.
 
