@@ -314,9 +314,10 @@ def send_message(request):
     chat = Chat.objects.filter(id=chat_id)
 
     if chat.exists() and is_participants(chat_id, request.user.id):
-        Message(text=request.POST.get('message_body'),
+        message = Message(text=request.POST.get('message_body'),
                 sender=list(User.objects.filter(id=request.user.id))[0],
-                chat=list(Chat.objects.filter(id=chat_id))[0]).save()
+                chat=list(Chat.objects.filter(id=chat_id))[0])
+        message.save()
 
         chatSave = Chat.objects.get(id=chat_id)
         chatSave.lastMessage = datetime.datetime.now()
@@ -324,7 +325,7 @@ def send_message(request):
 
         print(datetime.datetime.now())
 
-        response = {'state': 'successful'}
+        response = {'state': 'successful', 'message_id' : message.id}
     else:
         response = {'state': 'chat does not exist'}
 

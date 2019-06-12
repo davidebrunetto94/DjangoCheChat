@@ -1,8 +1,10 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
+import requests
 import json
-from CheChatApp.models import Chat, PhoneBook
+from CheChatApp.models import Chat, PhoneBook, Message
+
 
 class AcceptanceTest(TestCase):
     def setUp(self):
@@ -53,14 +55,14 @@ class AcceptanceTest(TestCase):
         user2 = User.objects.create_user('davideTest2', 'davide.brunetto12Test@gmail.com', 'ciao12345')
 
         # creo terzo user
-        user2 = User.objects.create_user('davideTest3', 'davide.brunetto12Test@gmail.com', 'ciao12345')
+        user3 = User.objects.create_user('davideTest3', 'davide.brunetto12Test@gmail.com', 'ciao12345')
 
         # aggiungo secondo user come contatto
         URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
         self.client.post(URL)
 
         # aggiungo terzo user come contatto
-        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user3.id)
         self.client.post(URL)
 
         #account/contacts/', views.get_contacts)
@@ -76,7 +78,31 @@ class AcceptanceTest(TestCase):
 
         self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))
 
-        #3 da fare
+    #3
+    def test_write_message(self):
+        user1 = User.objects.create_user('ginoPulcinoTest', 'gino.pulcino@pulcinomail.com', 'ginopulcino')
+        user2 = User.objects.create_user('cinoPulginoTest', 'cino.pulgino@pulginomail.com', 'cinopulgino')
+
+        self.client.login(username=user1.username, password=user1.password)
+
+        # aggiungo user2 come contatto
+        self.client.post('http://127.0.0.1:8000/account/contacts/add/' + str(user2.id))
+
+        title = 'chat'
+        response = self.client.post('http://127.0.0.1:8000/chat/new/' + title)
+
+        chat_id_response = (json.loads(response.content)["id"])
+
+        self.client.post('http://127.0.0.1:8000/chat/add/participant/' + str(user2.id) + '/' + str(chat_id_response))
+
+        # si crea richiesta post
+        post_data = {'id': chat_id_response, 'message_body' : 'Hola!'}
+        actual_response = self.client.post('http://127.0.0.1:8000/chat/add/message/', data=post_data)
+        expected_response = {'state': 'successful', 'message_id' : list(Message.objects.filter(chat=chat_id_response).order_by('-timestamp'))[0].id}
+
+        self.assertJSONEqual(json.dumps(expected_response), json.loads(actual_response.content))
+
+
 
         #4
     def test_new_group_right_json(self):
@@ -171,7 +197,27 @@ class AcceptanceTest(TestCase):
 
         self.assertIn(user_to_add.id, list(chat.values_list('participants', flat=True)))
 
-        #8 da fare
+        #8
+    def test_leave_group(self):
+        user1 = User.objects.create_user('ginoPulcinoTest', 'gino.pulcino@pulcinomail.com', 'ginopulcino')
+        user2 = User.objects.create_user('cinoPulginoTest', 'cino.pulgino@pulginomail.com', 'cinopulgino')
+
+        self.client.login(username=user1.username, password=user1.password)
+
+        # aggiungo user2 come contatto
+        self.client.post('http://127.0.0.1:8000/account/contacts/add/' + str(user2.id))
+
+        title = 'chat'
+        response = self.client.post('http://127.0.0.1:8000/chat/new/' + title)
+
+        chat_id_response = (json.loads(response.content)["id"])
+
+        self.client.post('http://127.0.0.1:8000/chat/add/participant/' + str(user2.id) + '/' + str(chat_id_response))
+
+        response = self.client.post('http://127.0.0.1:8000/chat/delete/participant/' + chat_id_response)
+
+        self.assert_(Chat.objects.get(id=chat_id_response).participants.filter(id=user1.id).exists())
+        self.assertJSONEqual(json.dumps({'state' : 'successful'}), json.loads(response.content))
 
         #9
     def test_get_participants(self):
@@ -248,3 +294,4 @@ class AcceptanceTest(TestCase):
 
         chat = Chat.objects.get(id=chat_id_response)
         self.assertIsNotNone(chat)
+
