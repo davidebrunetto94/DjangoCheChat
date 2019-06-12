@@ -1,4 +1,4 @@
-1) ViewConversation
+﻿1) ViewConversation
 	US:
 	In qualità di utente voglio vedere la mia conversazione con un altro utente/gruppo in modo da poter leggere i messaggi che mi ha inviato
 	AT:
@@ -20,46 +20,47 @@
 	US:
 	In qualità di utente voglio creare un gruppo in modo da avere conversazioni con diverse persone
 	AT:
-	L'utente deve poter creare un gruppo, ovvero una conversazione alla quale può partecipare un numero indefinito di persone.
+	L'utente deve poter creare un gruppo, ovvero una conversazione alla quale può partecipare un numer di persone maggiore di due.
 
-5) DeleteConversation
-	US:
-	In qualità di utente voglio eliminare una conversazione in modo da non averla più a disposizione
-	AT:
-	L'utente deve poter eliminare le conversazioni alle quali non è più interessato. Se la conversazione è un gruppo, allora eliminando la conversazione l'utente abbandona anche il gruppo.
 
-6) Login
+5) Login
 	US:
 	In qualità di utente voglio entrare nell'applicazione in modo da poterla utilizzare
 	AT:
 	L'utente deve poter entrare nell'applicazione inserendo nome utente e password. Se la combinazione è sbagliata, allora si visualizza un messaggio di errore, altrimenti si procede al caricamento della schermata successiva.
 
-7) EditGroupName
+6) EditGroupName
 	US:
 	In qualità di gestore di un gruppo voglio modificarne il nome in modo da distinguerlo dagli altri
 	AT:
 	Il gestore di un gruppo deve poter modificarne il nome. Una volta scritto il nuovo nome può confermarlo o annullare l'operazione, ripristinando così il nome precedente.
 
-8) AddGroupParticipant
+7) AddParticipant
 	US:
-	In qualità di gestore di un gruppo voglio aggiungere le persone dalla rubrica in modo che ne facciano parte
+	In qualità di partecipante di una chat voglio aggiungere le persone in modo che ne facciano parte
 	AT:
 	Il gestore di un gruppo deve poter scegliere dalla rubrica un utente da aggiungere al gruppo. L'operazione dev'essere poi eseguita rispondendo in maniera affermativa a una richiesta di conferma, in modo da evitare aggiunte erronee.
 
-9) LeaveGroup
+8) LeaveGroup
 	US:
 	In qualità di membro di un gruppo voglio uscirne in modo da non ricevere più i suoi messaggi
 	AT:
 	Il membro di un gruppo deve poter uscire dallo stesso e non ricevere più messaggi. Uscire da un gruppo non significa eliminarlo. L'ex-membro non può rientrare autonomamente nel gruppo. Se ad uscire è l'unico amministratore del gruppo, allora il gruppo viene eliminato a seguito della sua uscita. L'operazione di abbandono del gruppo dev'essere eseguita a seguito di una richiesta di conferma in modo da evitare errori.
 
-10) ShowGroupParticipants
+9) ShowGroupParticipants
 	US:
 	In qualità di membro di un gruppo voglio vedere la lista dei suoi componenti in modo da sapere chi ne fa parte
 	AT:
 	Il membro di un gruppo deve poter visualizzare la lista dei suoi componenti. Da qui potrà vedere i profili dei singoli utenti e, se vuole, salvarli come contatti.
 
-11) AddContactToPhonebook
+10) AddContactToPhonebook
 	US:
 	In qualità di utente voglio aggiungere un'altro utente alla rubrica in modo da salvarne il contatto
 	AT:
 	Un utente qualunque può aggiungere un altro utente nella propria rubrica
+
+11) CreateChat
+	US:
+	In qualità di utente voglio creare una conversazione in modo da poter parlare con un altro utente
+	AT:
+	L'utente deve poter creare una conversazione alla quale partecipano due persone.
