@@ -16,8 +16,6 @@ class GetUserInfoTestCase(TestCase):
 
         #login
         self.client.login(username='davideTest', password='ciao12345')
-        login_time = datetime.datetime.now().strftime('%d %b %Y')
-
 
         #chiedo info user
         URL = 'http://127.0.0.1:8000/users/get/' + str(user.id)

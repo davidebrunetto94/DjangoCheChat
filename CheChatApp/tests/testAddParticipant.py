@@ -44,6 +44,10 @@ class AddParticipantTestCase(TestCase):
 
         self.client.login(username='davideTest', password='ciao12345')
 
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user_to_add.id)
+        self.client.post(URL)
+
         # creo nuova chat
         URL = 'http://127.0.0.1:8000/chat/new'
         response_creation = self.client.post(URL)
@@ -68,6 +72,10 @@ class AddParticipantTestCase(TestCase):
         user_to_add = User.objects.create_user('davide2', 'davide.brunetto12Test@gmail.it', 'password')
 
         self.client.login(username='davideTest', password='ciao12345')
+
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user_to_add.id)
+        self.client.post(URL)
 
         # creo nuova chat
         URL = 'http://127.0.0.1:8000/chat/new'
@@ -133,6 +141,12 @@ class AddParticipantTestCase(TestCase):
         # login come primo user
         self.client.login(username='davideTest', password='ciao12345')
 
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user_2.id)
+        self.client.post(URL)
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user_to_add.id)
+        self.client.post(URL)
+
         # creo nuova chat
         URL = 'http://127.0.0.1:8000/chat/new'
         response_creation = self.client.post(URL)
@@ -145,6 +159,10 @@ class AddParticipantTestCase(TestCase):
 
         # login secondo user
         self.client.login(username='davide2', password='password')
+
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user_to_add.id)
+        self.client.post(URL)
 
         # secondo utente aggiunge altro utente alla chat
         URL = 'http://127.0.0.1:8000/chat/add/participant/' + str(user_to_add.id) + '/' + str(chat_id)

@@ -19,6 +19,10 @@ class AcceptanceTest(TestCase):
         #creo secondo user
         user2 = User.objects.create_user('davideTest2', 'davide.brunetto12Test@gmail.com', 'ciao12345')
 
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        self.client.post(URL)
+
         # creo nuova chat
         URL = 'http://127.0.0.1:8000/chat/new'
         response_creation = self.client.post(URL)
@@ -83,7 +87,7 @@ class AcceptanceTest(TestCase):
         user1 = User.objects.create_user('ginoPulcinoTest', 'gino.pulcino@pulcinomail.com', 'ginopulcino')
         user2 = User.objects.create_user('cinoPulginoTest', 'cino.pulgino@pulginomail.com', 'cinopulgino')
 
-        self.client.login(username=user1.username, password=user1.password)
+        self.client.login(username='ginoPulcinoTest', password='ginopulcino')
 
         # aggiungo user2 come contatto
         self.client.post('http://127.0.0.1:8000/account/contacts/add/' + str(user2.id))
@@ -113,6 +117,12 @@ class AcceptanceTest(TestCase):
 
         user2 = User.objects.create_user('davideTest2', 'davide.brunetto12Test@gmail.com', 'ciao12345')
         user3 = User.objects.create_user('davideTest3', 'davide.brunetto12Test@gmail.com', 'ciao12345')
+
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        self.client.post(URL)
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user3.id)
+        self.client.post(URL)
 
         URL = 'http://127.0.0.1:8000/chat/new/' + title
         response = self.client.post(URL)
@@ -181,6 +191,10 @@ class AcceptanceTest(TestCase):
 
         self.client.login(username='davideTest', password='ciao12345')
 
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user_to_add.id)
+        self.client.post(URL)
+
         # creo nuova chat
         URL = 'http://127.0.0.1:8000/chat/new'
         response_creation = self.client.post(URL)
@@ -202,7 +216,11 @@ class AcceptanceTest(TestCase):
         user1 = User.objects.create_user('ginoPulcinoTest', 'gino.pulcino@pulcinomail.com', 'ginopulcino')
         user2 = User.objects.create_user('cinoPulginoTest', 'cino.pulgino@pulginomail.com', 'cinopulgino')
 
-        self.client.login(username=user1.username, password=user1.password)
+        self.client.login(username='ginoPulcinoTest', password='ginopulcino')
+
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        self.client.post(URL)
 
         # aggiungo user2 come contatto
         self.client.post('http://127.0.0.1:8000/account/contacts/add/' + str(user2.id))
@@ -214,7 +232,7 @@ class AcceptanceTest(TestCase):
 
         self.client.post('http://127.0.0.1:8000/chat/add/participant/' + str(user2.id) + '/' + str(chat_id_response))
 
-        response = self.client.post('http://127.0.0.1:8000/chat/delete/participant/' + chat_id_response)
+        response = self.client.post('http://127.0.0.1:8000/chat/delete/participant/' + str(chat_id_response))
 
         self.assert_(not Chat.objects.get(id=chat_id_response).participants.filter(id=user1.id).exists())
         self.assertJSONEqual(json.dumps({'state' : 'successful'}), json.loads(response.content))
@@ -230,6 +248,12 @@ class AcceptanceTest(TestCase):
 
         # creo terzo user chat
         user3 = User.objects.create_user('davideTest3', 'davide.brunetto12Test@gmail.com', 'ciao12345')
+
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        self.client.post(URL)
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user3.id)
+        self.client.post(URL)
 
         # creo nuova chat
         URL = 'http://127.0.0.1:8000/chat/new'

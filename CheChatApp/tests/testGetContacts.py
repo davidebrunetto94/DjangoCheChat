@@ -52,7 +52,8 @@ class GetContactsTestCase(TestCase):
 
         phonebook = PhoneBook.objects.filter(owner=user)
         response_expected = {
-            'state': 'phonebook not found'
+            'contacts': [],
+            'state': 'successful'
         }
 
         self.assertJSONEqual(json.dumps(response_expected), json.loads(true_response.content))

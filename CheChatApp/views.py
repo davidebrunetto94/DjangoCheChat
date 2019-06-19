@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -9,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from CheChatApp.models import Chat, PhoneBook, ChatUser, Message
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+
+from django.utils import timezone
 
 
 def user_listing(request):
@@ -101,7 +101,7 @@ def logout(request):
     auth_logout(request)
     return redirect('login')
 
-   #tested
+
 def info_chat_by_id(request, chat_id):
     chat = Chat.objects.filter(id=chat_id)
 
@@ -118,7 +118,7 @@ def info_chat_by_id(request, chat_id):
 
     return JsonResponse(response)
 
-    #tested
+
 def get_chat_by_user(request):
     """Get chat of the user"""
 
@@ -168,10 +168,8 @@ def get_last_message(request, chat_id):
     return JsonResponse(response)
 
 
-    #tested
 def new_chat(request, title=""):
-    """Create a new"""
-    # TODO: controllare se l'utente è amico
+    """Create a new chat"""
     if request.user.is_authenticated:
         chat = Chat.objects.create(title=title)
         chat.save()
@@ -253,15 +251,10 @@ def get_participants(request, chat_id):
 
     return JsonResponse(response)
 
-    #tested
+
 def get_contacts(request):
     if not PhoneBook.objects.filter(owner=request.user).exists():
         PhoneBook(owner=request.user).save()
-    #try:
-    #    phonebook = PhoneBook.objects.get(owner=request.user)
-    #except PhoneBook.DoesNotExist:
-    #    phonebook = None
-    #    response = {'state': 'phonebook not found'}
 
     phonebook = PhoneBook.objects.get(owner=request.user)
     response = {
@@ -289,7 +282,7 @@ def add_contact(request, added_user_id):
 
     return JsonResponse(response)
 
-    #tested
+
 def delete_contact(request, user_to_delete_id):
     try:
         phonebook = PhoneBook.objects.get(owner=request.user)
@@ -300,7 +293,7 @@ def delete_contact(request, user_to_delete_id):
     if User.objects.filter(id=user_to_delete_id).exists() and phonebook is not None \
             and phonebook.contacts.filter(id=user_to_delete_id).exists():
         response = {'state': 'successful'}
-        phonebook.contacts.get(id=user_to_delete_id).delete()
+        phonebook.contacts.remove(user_to_delete_id)
     elif phonebook is not None and not phonebook.contacts.filter(id=user_to_delete_id).exists():
         response = {'state': 'user does not exist'}
 
@@ -320,10 +313,8 @@ def send_message(request):
         message.save()
 
         chatSave = Chat.objects.get(id=chat_id)
-        chatSave.lastMessage = datetime.datetime.now()
+        chatSave.lastMessage = timezone.now()
         chatSave.save()
-
-        print(datetime.datetime.now())
 
         response = {'state': 'successful', 'message_id' : message.id}
     else:
@@ -345,7 +336,7 @@ def get_messages_by_id(request, chat_id):
 
     return JsonResponse(response)
 
-    #tested
+
 def is_participants(chat_id, user_id):
     """Check if the user is a participant of the chat"""
 

@@ -20,6 +20,12 @@ class GetParticipantsTestCase(TestCase):
         # creo terzo user chat
         user3 = User.objects.create_user('davideTest3', 'davide.brunetto12Test@gmail.com', 'ciao12345')
 
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        self.client.post(URL)
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user3.id)
+        self.client.post(URL)
+
         #creo nuova chat
         URL = 'http://127.0.0.1:8000/chat/new'
         response_creation = self.client.post(URL)
@@ -60,6 +66,12 @@ class GetParticipantsTestCase(TestCase):
 
         # creo terzo user chat
         user3 = User.objects.create_user('davideTest3', 'davide.brunetto12Test@gmail.com', 'ciao12345')
+
+        # aggiungo contatto
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user2.id)
+        self.client.post(URL)
+        URL = 'http://127.0.0.1:8000/account/contacts/add/' + str(user3.id)
+        self.client.post(URL)
 
         # creo nuova chat
         URL = 'http://127.0.0.1:8000/chat/new'
